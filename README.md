@@ -1,3 +1,22 @@
+# NanoGrids-MIDI "triggerspace"
+
+## Modifications
+
+- Added MIDI-IN TRS-A jack + 6N137 optocoupler for MIDI clock sync (eg https://github.com/sonic-insurgence/Gritty-Grids/tree/master)
+- Added MIDI-OUT TRS-A - required changing the pin used for the clock in, so requires custom firmware to use (WIP)
+    - I've added jumpers and cuttable solder jumpers to allow easy re-routing for stock firmware if required/desired.
+- Various tweaks to routing front panel layout and look
+
+## MIDI-out firmware (WIP)
+
+- Idea: MIDI OUT (eg GM MIDI drums on channel 10)
+  This would require firmware changes - Mutables avrlib has SerialOut: 
+  https://github.com/sonic-insurgence/Gritty-Grids/blob/master/avrlib/serial.h#L119 we could use.
+  An avr MIDI example: https://github.com/dreamiurg/avr-liberty/blob/master/src/ccrma/midi.c
+  Mutable MIDIpal: https://github.com/pichenettes/midipal - for MIDI out code ?
+- Because the IN_CLOCK currently used the hardware serial TX port on the AtMEGA328p, if we make the IN_MIDI use that port
+  we will need to change the IN_CLOCK GPIO reading (it's currently read as half an 8-bit parallel port - see the midipal code, we should be able to switch the clock to a GPIO instead: https://github.com/pichenettes/midipal/blob/master/midipal/hardware_config.h#L44)
+
 # NanoGrids
 ### Arduino Nano version of Mutable Instruments Grids
 
