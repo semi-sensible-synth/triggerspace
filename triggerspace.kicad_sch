@@ -5,9 +5,10 @@
   (paper "A2")
 
   (title_block
-    (title "NanoGris made from Mutable Instruments Grids")
+    (title "triggerspace (\"NanoGris-MIDI\")")
     (date "2020-03-28")
-    (rev "0.41")
+    (rev "0.042")
+    (company "Andrew Perry (semi-sensible synth)")
   )
 
   (lib_symbols
