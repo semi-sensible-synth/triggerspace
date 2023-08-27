@@ -2,9 +2,9 @@
 
 This is a remix of the [NanoGris](https://github.com/Quinienl/NanoGris) trigger sequence generator (by Quinie), which in turn was based on the original [Grids](https://pichenettes.github.io/mutable-instruments-documentation/modules/grids/) hardware design by Mutable Instruments / Émilie Gillet, used under a Creative Commons ShareAlike 3.0 Licesne (CC BY-SA 3.0).
 
-You might call it _"NanoGris-MIDI"_.
+You might call it _"NanoGris-MIDI"_. The front panel looks something like this:
 
-This is not a Mutable Instruments product.
+![triggerspace front panel render](images/front_panel_render.jpg "Front panel")
 
 # Features
 - Outputs three channels of 'topographic' drum triggers (kick, snare, hihat), with accent outputs
@@ -37,4 +37,4 @@ This is not a Mutable Instruments product.
   - 46 (Bb1) - open HH
 - We could either change velocity based on accent, or assign accent to other notes (eg ch3 accent = open HH)
 - (Other ideas: Set the note to be played via one of the CV inputs, or MIDI-IN)
-- (Crazier ideas: add a SAM2695 chip for GM MIDI out ! There seem to be NOS versions on AliExpress ....)
+- (Crazier ideas: add a SAM2695 or VS1053B chip for GM MIDI out ! There seem to be NOS versions on AliExpress ....)
