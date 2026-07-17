@@ -1,0 +1,3 @@
+[submodule "firmware/Gritty-Grids"]
+	path = firmware/Gritty-Grids
+	url = git@github.com:semi-sensible-synth/Gritty-Grids.git

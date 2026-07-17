@@ -1,3 +1,10 @@
+hardware_debugging/
+*.bak
+
+# Local design notes / scratch plans (kept out of version control)
+plans/
+TODO.md
+
 # For PCBs designed using KiCad: https://www.kicad.org/
 # Format documentation: https://kicad.org/help/file-formats/
 
