@@ -1,4 +1,4 @@
-// Gritty-osc — Milestone 4: six-voice DDS square/PWM oscillator.
+// Gritty-osc — Milestone 5: six-voice DDS oscillator with note-LUT tuning.
 //
 // Six independent DDS voices, each a 16-bit phase accumulator, packed into the
 // six audio bits of the 74HC595 and shifted out once per sample tick. Bit map
@@ -10,8 +10,8 @@
 // voices; bit 0x80 (CH_RND) is left alone. (Those two jacks double as MIDI I/O —
 // the mix is only reachable with the CLOCK jack jumpered to voltage-trigger mode.)
 //
-// Interim control (bring-up only; proper mapping lands in M5/M6):
-//   BD/SD/HH density knobs -> pitch of voices 0/1/2
+// Interim control (bring-up; final root/chord/per-channel mapping lands in M6):
+//   BD/SD/HH density knobs -> pitch of voices 0/1/2 (note-LUT tuned)
 //   TEMPO knob             -> master transpose (+/-2 octaves)
 //   voices 3/4/5           -> voices 0/1/2 one octave down (so all six sound)
 //   X-CV knob              -> global PWM duty (~12%..88%, 50% = square)
@@ -19,11 +19,15 @@
 // Dropped to 16-bit accumulators + Fs = 62.5 kHz so six voices fit the ISR
 // budget at 16 MHz (see plans/gritty-osc.md, Milestone 4).
 //
+// M5: pitch comes from a precomputed note -> tuning-word table (equal
+// temperament, generated for Fs = 62.5 kHz), so no powf()/float is used at
+// runtime — a plain flash lookup replaces the per-change float pow.
+//
 // Fork of Gritty-Grids, based on Mutable Instruments' Grids (Emilie Gillet).
 // GPLv3 (see LICENSE).
 
 #include <avr/interrupt.h>
-#include <math.h>
+#include <avr/pgmspace.h>
 
 #include "avrlib/adc.h"
 #include "avrlib/watchdog_timer.h"
@@ -91,17 +95,36 @@ ISR(TIMER2_COMPA_vect)
   PORTB |= _BV(PB2);
 }
 
-// increment = freq * 2^16 / Fs  (rounded). 16-bit -> Fs/65536 = ~0.95 Hz/count
-// at 62.5 kHz; worst-case ~15 cents at the very bottom, finer higher up.
-static inline uint16_t TuningWord(float freq_hz)
-{
-  return (uint16_t)(freq_hz * (65536.0f / (float)kSampleRate) + 0.5f);
-}
+// MIDI note -> 16-bit DDS tuning word (increment = freq * 2^16 / Fs, rounded).
+// Equal temperament, A4 = note 69 = 440 Hz, generated for Fs = 62.5 kHz. Held in
+// flash (PROGMEM); indexing this replaces the per-change powf() of earlier
+// milestones. Resolution is Fs/65536 = ~0.95 Hz/count (coarse at the sub-audio
+// bottom, fine over the useful range).
+static const uint16_t kNoteTuningWord[128] PROGMEM = {
+      9,     9,    10,    10,    11,    11,    12,    13,
+     14,    14,    15,    16,    17,    18,    19,    20,
+     22,    23,    24,    26,    27,    29,    31,    32,
+     34,    36,    38,    41,    43,    46,    48,    51,
+     54,    58,    61,    65,    69,    73,    77,    82,
+     86,    92,    97,   103,   109,   115,   122,   129,
+    137,   145,   154,   163,   173,   183,   194,   206,
+    218,   231,   244,   259,   274,   291,   308,   326,
+    346,   366,   388,   411,   435,   461,   489,   518,
+    549,   581,   616,   652,   691,   732,   776,   822,
+    871,   923,   978,  1036,  1097,  1163,  1232,  1305,
+   1383,  1465,  1552,  1644,  1742,  1845,  1955,  2071,
+   2195,  2325,  2463,  2610,  2765,  2930,  3104,  3288,
+   3484,  3691,  3910,  4143,  4389,  4650,  4927,  5220,
+   5530,  5859,  6207,  6577,  6968,  7382,  7821,  8286,
+   8779,  9301,  9854, 10440, 11060, 11718, 12415, 13153,
+};
 
-// MIDI note number -> frequency (equal temperament, A4 = 69 = 440 Hz).
-static inline float NoteToFreq(int8_t note)
+// Look up a note's tuning word, clamping the index to the valid MIDI range.
+static inline uint16_t NoteTuningWord(int8_t note)
 {
-  return 440.0f * powf(2.0f, (float)(note - 69) / 12.0f);
+  if (note < 0)   note = 0;
+  if (note > 127) note = 127;
+  return pgm_read_word(&kNoteTuningWord[(uint8_t)note]);
 }
 
 void Init()
@@ -157,8 +180,8 @@ int main(void)
       if (note != last_note[v] || transpose != last_transpose)
       {
         last_note[v] = note;
-        uint16_t inc_main = TuningWord(NoteToFreq(note + transpose));
-        uint16_t inc_sub  = TuningWord(NoteToFreq(note + transpose - 12));
+        uint16_t inc_main = NoteTuningWord(note + transpose);
+        uint16_t inc_sub  = NoteTuningWord(note + transpose - 12);
         cli();
         increment[v]     = inc_main;   // voices 0/1/2
         increment[v + 3] = inc_sub;    // voices 3/4/5 one octave down
