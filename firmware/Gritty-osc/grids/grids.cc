@@ -1,10 +1,11 @@
-// Gritty-osc — Milestone 2: single-voice DDS square-wave oscillator.
+// Gritty-osc — Milestone 3: single-voice DDS square/PWM oscillator.
 //
 // Repurposes the triggerspace hardware as an oscillator. A high-rate timer ISR
 // (the "sample clock") advances a 32-bit phase accumulator by a tuning word each
-// tick; the accumulator MSB is emitted as a square wave on the BD jack (74HC595
-// bit 0x01). Pitch is set by the TEMPO knob, quantised to equal-tempered
-// semitones so a tuner gives a clean pass/fail on pitch accuracy.
+// tick; each tick emits a 1-bit pulse on the BD jack (74HC595 bit 0x01), high
+// while `phase < duty`. Pitch is set by the TEMPO knob, quantised to
+// equal-tempered semitones so a tuner gives a clean pass/fail on pitch accuracy;
+// the X-CV knob sets the pulse width (duty), 50% = square.
 //
 // Fork of Gritty-Grids, based on Mutable Instruments' Grids (Emilie Gillet).
 // GPLv3 (see LICENSE).
@@ -25,10 +26,10 @@ AdcInputScanner adc;
 
 // ---- DDS sample clock ----------------------------------------------------
 // Timer2 in CTC mode, prescaler /1: Fs = F_CPU / (OCR2A + 1).
-// 20 MHz / 200 = 100 kHz. One voice + one 8-bit SPI write fits easily in the
-// 200-cycle budget; revisit when scaling to 6 voices (see plans/gritty-osc.md).
+// 16 MHz / 160 = 100 kHz. One voice + one 8-bit SPI write fits in the 160-cycle
+// budget; revisit when scaling to 6 voices (see plans/gritty-osc.md).
 static const uint32_t kSampleRate = 100000UL;
-static const uint8_t  kOcr2a      = (F_CPU / kSampleRate) - 1;   // = 199
+static const uint8_t  kOcr2a      = (F_CPU / kSampleRate) - 1;   // = 159 @ 16 MHz
 
 // 74HC595 bit that drives the BD jack (matches the Grids state-byte bit map).
 static const uint8_t kBdBit = 0x01;
@@ -39,6 +40,9 @@ static const uint8_t kBdBit = 0x01;
 // (under cli) and read in the ISR, so it must be volatile.
 uint32_t phase = 0;
 volatile uint32_t increment = 0;
+// PWM comparison threshold: output is high while phase < duty. 0x80000000 = 50%
+// (square). Written from the main loop (under cli), read in the ISR.
+volatile uint32_t duty = 0x80000000UL;
 
 ISR(TIMER2_COMPA_vect)
 {
@@ -47,7 +51,7 @@ ISR(TIMER2_COMPA_vect)
   // that would force a full register save). Mirrors ShiftRegister::Write: the
   // latch/SS is PB2; pulsing it low then high clocks the byte to the outputs.
   PORTB &= ~_BV(PB2);
-  SPDR = (phase & 0x80000000UL) ? kBdBit : 0;
+  SPDR = (phase < duty) ? kBdBit : 0;
   while (!(SPSR & _BV(SPIF)))
     ;
   PORTB |= _BV(PB2);
@@ -101,5 +105,18 @@ int main(void)
       increment = inc;
       sei();
     }
+
+    // X-CV knob -> PWM duty (pulse width). Map 0..255 across ~12%..88% duty,
+    // centred on 50% = square. Trimming both extremes keeps the whole sweep
+    // audible: below ~10% the pulse is too narrow to hear, and near 100% it is a
+    // thin spike that barely changes. (Timbre is symmetric about 50%, so 12% and
+    // 88% sound alike — that's fine; the point is a fully useful knob throw.)
+    uint8_t xcv = adc.Read8(ADC_CHANNEL_X_CV);
+    static const uint32_t kDutyMin  = 0x1F000000UL;   // ~12%: thinnest audible pulse
+    static const uint32_t kDutyStep = 0x00C20000UL;   // per ADC count; xcv=255 -> ~88%
+    uint32_t d = kDutyMin + (uint32_t)xcv * kDutyStep;
+    cli();
+    duty = d;
+    sei();
   }
 }
