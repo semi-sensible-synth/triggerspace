@@ -13,8 +13,8 @@
 
 VERSION        = 0.1
 MCU_NAME       = 328
-#F_CPU          = 16000000 # 16MHz - at one point I needed this for correct MIDI baud rate ?
-F_CPU          = 20000000 # 20MHz original Grids speed
+F_CPU          = 16000000 # 16MHz - this board's actual crystal (verified via osc pitch test: 20MHz build ran 20% flat)
+#F_CPU          = 20000000 # 20MHz original Grids speed (original Grids hardware / a 20MHz Nano)
 TARGET         = grids
 PACKAGES       = avrlib avrlib/devices grids
 RESOURCES      = grids/resources
