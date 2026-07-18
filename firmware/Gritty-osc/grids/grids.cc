@@ -6,7 +6,9 @@
 //   voice 0 -> 0x01 CH1        voice 3 -> 0x08 CH1_ACC
 //   voice 1 -> 0x02 CH2        voice 4 -> 0x10 CH2_ACC
 //   voice 2 -> 0x04 CH3        voice 5 -> 0x20 CH3_ACC
-// (bits 0x40/0x80 drive CH_CLOCK/CH_RND — left alone; those jacks are MIDI.)
+// Bit 0x40 (CH_CLOCK jack) carries a first-order sigma-delta PDM *mix* of all six
+// voices; bit 0x80 (CH_RND) is left alone. (Those two jacks double as MIDI I/O —
+// the mix is only reachable with the CLOCK jack jumpered to voltage-trigger mode.)
 //
 // Interim control (bring-up only; proper mapping lands in M5/M6):
 //   BD/SD/HH density knobs -> pitch of voices 0/1/2
@@ -56,14 +58,28 @@ ISR(TIMER2_COMPA_vect)
 {
   uint16_t d = duty;   // read the shared threshold once
   uint8_t out = 0;
+  uint8_t sum = 0;     // count of voices currently high (0..6) = mix level
   // Unrolled so the accumulators stay in registers and the timing is
   // deterministic (no loop counter / indexed addressing in the hot path).
-  phase[0] += increment[0]; if (phase[0] < d) out |= 0x01;
-  phase[1] += increment[1]; if (phase[1] < d) out |= 0x02;
-  phase[2] += increment[2]; if (phase[2] < d) out |= 0x04;
-  phase[3] += increment[3]; if (phase[3] < d) out |= 0x08;
-  phase[4] += increment[4]; if (phase[4] < d) out |= 0x10;
-  phase[5] += increment[5]; if (phase[5] < d) out |= 0x20;
+  phase[0] += increment[0]; if (phase[0] < d) { out |= 0x01; ++sum; }
+  phase[1] += increment[1]; if (phase[1] < d) { out |= 0x02; ++sum; }
+  phase[2] += increment[2]; if (phase[2] < d) { out |= 0x04; ++sum; }
+  phase[3] += increment[3]; if (phase[3] < d) { out |= 0x08; ++sum; }
+  phase[4] += increment[4]; if (phase[4] < d) { out |= 0x10; ++sum; }
+  phase[5] += increment[5]; if (phase[5] < d) { out |= 0x20; ++sum; }
+
+  // Mix out on the clock jack (bit 0x40): a first-order sigma-delta modulator
+  // turns the 0..6 summed level into a 1-bit PDM stream whose pulse density
+  // tracks the mix. Low-passed downstream (1k series R + cap / input capacitance)
+  // this reconstructs a mono sum of all six squares; the Fs carrier (62.5 kHz) is
+  // inaudible. Requires the CLOCK jack jumper in voltage-trigger (not MIDI) mode.
+  // (First order is unconditionally stable — the accumulator simply wraps in 8
+  // bits. A second-order loop overloads on loud input and crackles; not worth it,
+  // and the first-order "sizzle" is a nice effect through an external low-pass.)
+  static uint16_t sd_acc = 0;
+  sd_acc += (uint16_t)sum * 42;      // 0..6 -> 0..252 added per tick (<= full scale)
+  if (sd_acc & 0xFF00) out |= 0x40;  // carry past 255 -> emit a 1
+  sd_acc &= 0x00FF;                  // keep the fractional remainder
 
   // Hand-written SPI byte to the 74HC595 (hot path — avoids a non-inlined call
   // that would force a full register save). Latch/SS is PB2: pulse low then high
