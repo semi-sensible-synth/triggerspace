@@ -68,13 +68,27 @@ namespace grids
   // Replaced by GPIOs below, since D1 in now used for MIDI OUT (on SerialPort0/TX/D1)
   // typedef ParallelPort<PortD, avrlib::PARALLEL_NIBBLE_LOW> Inputs;  // (D0), D1, D2, D3
 
+  // ---- Pinout selection -----------------------------------------------------
+  // triggerspace moves the clock input off D1 (PD1) onto D8 (PB0) so the hardware
+  // UART on D0/D1 (PD0/PD1) is free for TRS-A MIDI in/out. Original Grids hardware
+  // (and clones) instead wire the clock to D1 and have no MIDI. To build for that
+  // original hardware, set TRIGGERSPACE_PINOUT to 0: the clock input moves back to
+  // D1 — but then D0/D1 are no longer a spare UART, so the MIDI features (see
+  // grids.cc) cannot be used. Leave it 1 for triggerspace. This is the only pin
+  // that actually moved; D2/D3 (reset/button) are the same on both.
+  #define TRIGGERSPACE_PINOUT 1
+
   typedef Gpio<PortD, 2> _resetPin;  // D2 (PD2)
   typedef Gpio<PortD, 3> _buttonPin; // D3 (PD3)
-  typedef Gpio<PortB, 0> _clockPin;  // D8 (PB0) (moved from PD1)
+#if TRIGGERSPACE_PINOUT
+  typedef Gpio<PortB, 0> _clockPin;  // D8 (PB0) — triggerspace (moved off D1)
+#else
+  typedef Gpio<PortD, 1> _clockPin;  // D1 (PD1) — original Grids clock input
+#endif
 
   typedef DigitalInput<_resetPin> ResetInput;   // D2 (PD2)
   typedef DigitalInput<_buttonPin> ButtonInput; // D3 (PD3)
-  typedef DigitalInput<_clockPin> ClockInput;   // D8 (PB0) (moved from PD1)
+  typedef DigitalInput<_clockPin> ClockInput;   // D8/D1 per TRIGGERSPACE_PINOUT
 
   typedef SpiMaster<Gpio<PortB, 2>, avrlib::MSB_FIRST, 2> ShiftRegister;
 

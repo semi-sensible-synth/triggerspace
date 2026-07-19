@@ -26,6 +26,12 @@
 // temperament, generated for Fs = 62.5 kHz), so no powf()/float is used at
 // runtime — a plain flash lookup replaces the per-change float pow.
 //
+// M7 (optional, build-time): MIDI note control. Define one of the OSC_MIDI_*
+// modes below to play the six voices from the D0/D1 TRS-A MIDI input instead of
+// the knob/CV + trigger control — a one-key chord, three MIDI channels, 3- or
+// 6-voice polyphony, or a split keyboard. Requires TRIGGERSPACE_PINOUT (so that
+// D0/D1 are free as a UART).
+//
 // Fork of Gritty-Grids, based on Mutable Instruments' Grids (Emilie Gillet).
 // GPLv3 (see LICENSE).
 
@@ -37,6 +43,52 @@
 
 #include "grids/hardware_config.h"
 
+// ---- MIDI note control (build-time) --------------------------------------
+// Define exactly ONE of these to turn the module into a MIDI-controlled
+// oscillator (needs TRIGGERSPACE_PINOUT — MIDI lives on the D0/D1 UART). With
+// none defined the knob/CV + trigger control is used and MIDI is off.
+//   OSC_MIDI_MONO_ROOT  (A) one channel; the (last) held note sets the ROOT and
+//                           the panel still shapes it — chaos = chord type,
+//                           X = detune, density knobs = per-channel PWM. A whole
+//                           6-voice chord from a single key.
+//   OSC_MIDI_MULTI_3CH  (B) three channels (base, base+1, base+2) drive osc
+//                           0/1/2 independently; each sub tracks its main an
+//                           octave down. Mod wheel (CC1) = global PWM; CC94 =
+//                           detune depth.
+//   OSC_MIDI_POLY3      (C1) 3-voice polyphony, round-robin over osc 0/1/2; each
+//                           sub doubles its main an octave down. Mod wheel = PWM.
+//   OSC_MIDI_POLY6      (C2) 6-voice polyphony, round-robin over all six oscs
+//                           (subs are independent voices, no doubling).
+//   OSC_MIDI_SPLIT      (D) split keyboard: notes >= OSC_SPLIT_NOTE round-robin
+//                           over the mains (0/1/2); notes below are a bassline
+//                           round-robined over the subs (3/4/5).
+//#define OSC_MIDI_MONO_ROOT
+//#define OSC_MIDI_MULTI_3CH
+//#define OSC_MIDI_POLY3
+//#define OSC_MIDI_POLY6
+//#define OSC_MIDI_SPLIT
+
+// Base MIDI channel (0-based: 0 = channel 1). Mode B also uses base+1, base+2.
+#ifndef OSC_MIDI_CHANNEL
+#define OSC_MIDI_CHANNEL 0
+#endif
+// Split point for OSC_MIDI_SPLIT, as a MIDI note number (60 = middle C = C4).
+// 48 = C3: notes >= this play the mains, below play the sub/bass voices. Try 60.
+#ifndef OSC_SPLIT_NOTE
+#define OSC_SPLIT_NOTE 48
+#endif
+
+#if defined(OSC_MIDI_MONO_ROOT) || defined(OSC_MIDI_MULTI_3CH) || \
+    defined(OSC_MIDI_POLY3) || defined(OSC_MIDI_POLY6) || defined(OSC_MIDI_SPLIT)
+#define OSC_MIDI
+#endif
+#if defined(OSC_MIDI) && !TRIGGERSPACE_PINOUT
+#error "OSC_MIDI needs the D0/D1 UART; build with TRIGGERSPACE_PINOUT 1."
+#endif
+#ifdef OSC_MIDI
+#include "grids/midi.h"
+#endif
+
 using namespace avrlib;
 using namespace grids;
 
@@ -46,8 +98,18 @@ ClockInput clock_input;   // D8 (PB0) trigger in -> "step" (advance)
 ResetInput reset_input;   // D2 trigger in       -> "reset"
 ButtonInput button_input; // D3 button           -> cycle arp mode (or manual step)
 Leds leds;                // D4..D7 -> arp-mode readout
+#ifdef OSC_MIDI
+MidiIO midi;              // D0/D1 TRS-A MIDI (input used; output unused here)
+#endif
 
 static const uint8_t kNumVoices = 6;
+
+// The three "density/fill" pots, used as per-channel PWM (and pitch in the
+// OSC_DENSITY_AS_PITCH / mode-A layouts). File scope so RenderMidi() shares them.
+static const uint8_t kDensityCh[3] = {
+    ADC_CHANNEL_BD_DENSITY_CV,
+    ADC_CHANNEL_SD_DENSITY_CV,
+    ADC_CHANNEL_HH_DENSITY_CV};
 
 // ---- Control layout (build-time) -----------------------------------------
 // Default (Option B): Y = root pitch, chaos = chord type, the three density/fill
@@ -81,28 +143,28 @@ static const uint8_t  kOcr2a      = (F_CPU / kSampleRate) - 1;   // = 255 @ 16 M
 // Per-voice 16-bit DDS state. `phase[]` is ISR-private (not volatile so the
 // compiler can keep the accumulators hot). `increment[]` (tuning words) and
 // `duty[]` are written from the main loop under cli and read in the ISR, so they
-// are volatile. Output bit i is high while phase[i] < its channel duty. Duty is
-// per channel (3 values); each main voice v and its accent v+3 share duty[v].
+// are volatile. Output bit i is high while phase[i] < duty[i]. Duty is now per
+// VOICE (six values): the non-MIDI builds set the sub v+3 to match its main v,
+// but the MIDI poly modes drive all six independently and silence a released
+// voice by setting its duty to 0 (its pin then holds low -> no audio).
 uint16_t phase[kNumVoices] = {0};
 volatile uint16_t increment[kNumVoices] = {0};
-volatile uint16_t duty[3] = {0x8000, 0x8000, 0x8000};   // 50% square default
+volatile uint16_t duty[kNumVoices] =
+    {0x8000, 0x8000, 0x8000, 0x8000, 0x8000, 0x8000};   // 50% square default
 
 ISR(TIMER2_COMPA_vect)
 {
   uint8_t out = 0;
   uint8_t sum = 0;     // count of voices currently high (0..6) = mix level
-  uint16_t d;
-  // Unrolled, grouped by channel so each main voice and its accent (v, v+3) share
-  // one duty load. Accumulators stay in registers; timing stays deterministic.
-  d = duty[0];
-  phase[0] += increment[0]; if (phase[0] < d) { out |= 0x01; ++sum; }
-  phase[3] += increment[3]; if (phase[3] < d) { out |= 0x08; ++sum; }
-  d = duty[1];
-  phase[1] += increment[1]; if (phase[1] < d) { out |= 0x02; ++sum; }
-  phase[4] += increment[4]; if (phase[4] < d) { out |= 0x10; ++sum; }
-  d = duty[2];
-  phase[2] += increment[2]; if (phase[2] < d) { out |= 0x04; ++sum; }
-  phase[5] += increment[5]; if (phase[5] < d) { out |= 0x20; ++sum; }
+  // Unrolled, one duty load per voice so the MIDI poly modes can drive the
+  // sub-oscillators independently (and gate a single voice to silence). Six
+  // 16-bit duty loads still fit the 62.5 kHz / 256-cycle ISR budget with room.
+  phase[0] += increment[0]; if (phase[0] < duty[0]) { out |= 0x01; ++sum; }
+  phase[1] += increment[1]; if (phase[1] < duty[1]) { out |= 0x02; ++sum; }
+  phase[2] += increment[2]; if (phase[2] < duty[2]) { out |= 0x04; ++sum; }
+  phase[3] += increment[3]; if (phase[3] < duty[3]) { out |= 0x08; ++sum; }
+  phase[4] += increment[4]; if (phase[4] < duty[4]) { out |= 0x10; ++sum; }
+  phase[5] += increment[5]; if (phase[5] < duty[5]) { out |= 0x20; ++sum; }
 
   // Mix out on the clock jack (bit 0x40): a first-order sigma-delta modulator
   // turns the 0..6 summed level into a 1-bit PDM stream whose pulse density
@@ -238,6 +300,219 @@ static uint8_t AdvanceArp(uint8_t step, uint8_t n, uint8_t mode,
   return step;
 }
 
+#ifdef OSC_MIDI
+// ===========================================================================
+// MIDI note control (build-time mode select at the top of the file). All state
+// here lives in the main loop: PollMidi() updates it from the D0/D1 UART and
+// RenderMidi() turns it into the increment[]/duty[] the audio ISR reads. A
+// released voice is silenced by setting its duty to 0 (its pin then holds low).
+// ===========================================================================
+
+static int8_t  midi_note[kNumVoices];   // note per voice (multi/poly/split modes)
+static bool    midi_gate[kNumVoices];   // is that voice currently sounding?
+static uint8_t midi_rr = 0;             // round-robin allocation pointer
+static uint8_t midi_mod = 0;            // mod wheel (CC1) -> global PWM
+static uint8_t midi_detune = 0;         // CC94 -> detune depth (0..127 -> 0..255)
+
+#if defined(OSC_MIDI_MONO_ROOT)
+static int8_t  held_notes[8];           // last-note-priority stack (mode A)
+static uint8_t held_count = 0;
+static int8_t  last_root = 60;          // pitch to hold when all keys are up
+
+static void HeldRemove(int8_t n)
+{
+  for (uint8_t i = 0; i < held_count; ++i)
+  {
+    if (held_notes[i] == n)
+    {
+      for (uint8_t j = i; j + 1 < held_count; ++j) held_notes[j] = held_notes[j + 1];
+      --held_count;
+      return;
+    }
+  }
+}
+static void HeldPush(int8_t n)
+{
+  HeldRemove(n);                        // no duplicates
+  if (held_count < 8) held_notes[held_count++] = n;
+}
+#endif
+
+// Mod wheel 0 -> 50% square; turning it up narrows the pulse (thinner/brighter).
+static inline uint16_t MidiDuty()
+{
+  return (uint16_t)(0x8000u - (uint16_t)midi_mod * 0xC2);   // square .. ~12%
+}
+
+#if defined(OSC_MIDI_POLY3) || defined(OSC_MIDI_POLY6) || defined(OSC_MIDI_SPLIT)
+// Assign a voice in [lo..hi] to a new note: reuse a released voice if one is
+// free, else steal the next in round-robin order.
+static uint8_t AllocVoice(uint8_t lo, uint8_t hi)
+{
+  uint8_t n = (uint8_t)(hi - lo + 1);
+  for (uint8_t k = 0; k < n; ++k)
+    if (!midi_gate[lo + k]) return (uint8_t)(lo + k);
+  uint8_t v = (uint8_t)(lo + (midi_rr % n));
+  midi_rr = (uint8_t)((midi_rr + 1) % n);
+  return v;
+}
+static void ReleaseNote(int8_t note, uint8_t lo, uint8_t hi)
+{
+  for (uint8_t v = lo; v <= hi; ++v)
+    if (midi_gate[v] && midi_note[v] == note) midi_gate[v] = false;
+}
+#endif
+
+static void AllNotesOff()
+{
+  for (uint8_t v = 0; v < kNumVoices; ++v) midi_gate[v] = false;
+#if defined(OSC_MIDI_MONO_ROOT)
+  held_count = 0;
+#endif
+}
+
+// Parse the incoming MIDI byte stream (polled; system-realtime bytes ignored).
+// Routes note on/off and CC (mod wheel, detune, all-notes-off) to the per-mode
+// state above. Handles running status and 1-byte (program/pressure) messages.
+static void PollMidi()
+{
+  static uint8_t status = 0, data0 = 0, idx = 0;
+  uint8_t guard = 16;                   // bound the per-call work
+  while (midi.readable() && guard--)
+  {
+    uint8_t b = midi.ImmediateRead();
+    if (b >= 0xf8) continue;            // system realtime — ignore here
+    if (b & 0x80) { status = b; idx = 0; continue; }   // status byte
+    if (!status) continue;
+
+    uint8_t msg = status & 0xf0;
+    if (idx == 0)
+    {
+      data0 = b;
+      if (msg == 0xc0 || msg == 0xd0) continue;   // 1-byte messages: complete
+      idx = 1;
+      continue;
+    }
+    idx = 0;                            // 2-byte message complete
+
+    uint8_t ch = status & 0x0f;
+    bool note_on  = (msg == 0x90 && b > 0);
+    bool note_off = (msg == 0x80) || (msg == 0x90 && b == 0);
+
+    if (msg == 0xb0)                    // control change
+    {
+      if (data0 == 1)  midi_mod = b;              // mod wheel -> PWM
+      else if (data0 == 94) midi_detune = b;      // detune depth
+      else if (data0 == 123 && b == 0) AllNotesOff();
+      continue;
+    }
+    if (!note_on && !note_off) continue;
+
+#if defined(OSC_MIDI_MULTI_3CH)
+    if (ch >= OSC_MIDI_CHANNEL && ch < OSC_MIDI_CHANNEL + 3)
+    {
+      uint8_t v = (uint8_t)(ch - OSC_MIDI_CHANNEL);
+      if (note_on)                    { midi_note[v] = data0; midi_gate[v] = true; }
+      else if (midi_note[v] == data0) { midi_gate[v] = false; }
+    }
+#else
+    if (ch != OSC_MIDI_CHANNEL) continue;
+# if defined(OSC_MIDI_MONO_ROOT)
+    if (note_on) HeldPush(data0); else HeldRemove(data0);
+# elif defined(OSC_MIDI_POLY3)
+    if (note_on) { uint8_t v = AllocVoice(0, 2); midi_note[v] = data0; midi_gate[v] = true; }
+    else ReleaseNote(data0, 0, 2);
+# elif defined(OSC_MIDI_POLY6)
+    if (note_on) { uint8_t v = AllocVoice(0, 5); midi_note[v] = data0; midi_gate[v] = true; }
+    else ReleaseNote(data0, 0, 5);
+# elif defined(OSC_MIDI_SPLIT)
+    if (note_on)
+    {
+      uint8_t v = (data0 >= OSC_SPLIT_NOTE) ? AllocVoice(0, 2) : AllocVoice(3, 5);
+      midi_note[v] = data0; midi_gate[v] = true;
+    }
+    else
+    {
+      if (data0 >= OSC_SPLIT_NOTE) ReleaseNote(data0, 0, 2);
+      else                         ReleaseNote(data0, 3, 5);
+    }
+# endif
+#endif
+  }
+}
+
+// Translate the MIDI note state into the increment[]/duty[] the ISR reads.
+static void RenderMidi()
+{
+#if defined(OSC_MIDI_MONO_ROOT)
+  // (A) one key -> a full 6-voice chord; the panel still shapes it (chaos =
+  // chord type, X = detune, density knobs = per-channel PWM).
+  int8_t root = held_count ? held_notes[held_count - 1] : last_root;
+  if (held_count) last_root = root;
+  bool sound = (held_count > 0);
+  uint8_t chord    = (uint8_t)((255 - adc.Read8(ADC_CHANNEL_RANDOMNESS_CV)) >> 5);
+  uint8_t det      = (uint8_t)(255 - adc.Read8(ADC_CHANNEL_X_CV));
+  uint8_t sub_det  = det;
+  uint8_t main_det = (det > 128) ? (uint8_t)(det - 128) : 0;
+  int8_t  sub_off  = (chord == 0) ? 0 : -12;
+  for (uint8_t v = 0; v < 3; ++v)
+  {
+    int8_t note = (int8_t)(root + (int8_t)pgm_read_byte(&kChord[chord][v]));
+    uint16_t inc_main = Detune(NoteTuningWord(note),           main_det, kDetuneSpread[v]);
+    uint16_t inc_sub  = Detune(NoteTuningWord(note + sub_off), sub_det,  kDetuneSpread[v + 3]);
+    uint16_t dv = KnobToDuty((uint8_t)(255 - adc.Read8(kDensityCh[v])));
+    cli();
+    increment[v]     = inc_main;
+    increment[v + 3] = inc_sub;
+    duty[v]     = sound ? dv : 0;
+    duty[v + 3] = sound ? dv : 0;
+    sei();
+  }
+
+#elif defined(OSC_MIDI_MULTI_3CH)
+  // (B) three channels drive osc 0/1/2; each sub tracks its main an octave down.
+  uint16_t gd = MidiDuty();
+  for (uint8_t v = 0; v < 3; ++v)
+  {
+    bool on = midi_gate[v];
+    uint16_t inc_main = Detune(NoteTuningWord(midi_note[v]),      midi_detune, kDetuneSpread[v]);
+    uint16_t inc_sub  = Detune(NoteTuningWord(midi_note[v] - 12), midi_detune, kDetuneSpread[v + 3]);
+    cli();
+    increment[v]     = inc_main;
+    increment[v + 3] = inc_sub;
+    duty[v]     = on ? gd : 0;
+    duty[v + 3] = on ? gd : 0;
+    sei();
+  }
+
+#elif defined(OSC_MIDI_POLY3)
+  // (C1) 3-voice polyphony; each sub doubles its main an octave down.
+  uint16_t gd = MidiDuty();
+  for (uint8_t v = 0; v < 3; ++v)
+  {
+    bool on = midi_gate[v];
+    cli();
+    increment[v]     = NoteTuningWord(midi_note[v]);
+    increment[v + 3] = NoteTuningWord(midi_note[v] - 12);
+    duty[v]     = on ? gd : 0;
+    duty[v + 3] = on ? gd : 0;
+    sei();
+  }
+
+#else   // (C2) OSC_MIDI_POLY6 or (D) OSC_MIDI_SPLIT: all six voices independent.
+  uint16_t gd = MidiDuty();
+  for (uint8_t v = 0; v < kNumVoices; ++v)
+  {
+    bool on = midi_gate[v];
+    cli();
+    increment[v] = NoteTuningWord(midi_note[v]);
+    duty[v]      = on ? gd : 0;
+    sei();
+  }
+#endif
+}
+#endif  // OSC_MIDI
+
 void Init()
 {
   cli();
@@ -255,6 +530,10 @@ void Init()
   button_input.EnablePullUpResistor();
   leds.set_mode(DIGITAL_OUTPUT);
 
+#ifdef OSC_MIDI
+  grids::MidiDevice::Init(midi);   // D0/D1 UART @ 31250 baud (input polled)
+#endif
+
   // Timer2: CTC (WGM21), prescaler /1 (CS20), compare-A interrupt = sample clock.
   TCCR2A = _BV(WGM21);
   TCCR2B = _BV(CS20);
@@ -269,13 +548,23 @@ int main(void)
   ResetWatchdog();
   Init();
 
+#ifdef OSC_MIDI
+  // MIDI-controlled oscillator (mode selected at the top of the file). Poll the
+  // UART and re-render the six voices every pass; the trigger/arp handling below
+  // is compiled out. Voices default to a gated-off middle C so nothing sounds
+  // until a note arrives.
+  for (uint8_t v = 0; v < kNumVoices; ++v) { midi_note[v] = 60; midi_gate[v] = false; }
+  while (1)
+  {
+    adc.Scan();     // keep the scanner fresh (mode A still reads the knobs)
+    PollMidi();
+    RenderMidi();
+  }
+#else
   // All of these pots are wired reversed (stock Grids reads them with ~), so
   // every raw reading is inverted to give 0..255 = clockwise. Pitch is cheap now
   // (note-LUT), so all voices are recomputed every loop — no change tracking.
-  const uint8_t kDensityCh[3] = {
-      ADC_CHANNEL_BD_DENSITY_CV,
-      ADC_CHANNEL_SD_DENSITY_CV,
-      ADC_CHANNEL_HH_DENSITY_CV};
+  // (kDensityCh is now file scope, shared with the MIDI renderer.)
 
   // Trigger debounce shift registers (0xfe = just went active/low) and the
   // per-mode state they drive. Unused ones fall out under -w.
@@ -356,6 +645,7 @@ int main(void)
       increment[v]     = inc_main;   // voices 0/1/2
       increment[v + 3] = inc_sub;    // voices 3/4/5 = sub-octaves
       duty[v]          = dv;
+      duty[v + 3]      = dv;         // sub shares its main's PWM width
       sei();
     }
 #else
@@ -375,8 +665,10 @@ int main(void)
       increment[v]     = inc_main;   // voices 0/1/2
       increment[v + 3] = inc_sub;    // voices 3/4/5 one octave down
       duty[v]          = gd;
+      duty[v + 3]      = gd;         // sub shares the global PWM width
       sei();
     }
 #endif
   }
+#endif  // OSC_MIDI
 }
