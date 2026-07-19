@@ -70,3 +70,4 @@ Use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-se
   label these as "RL" or something on silkscreen so they are easy identify and change as required.
 - Back board is a little too offset to the left. Push it ~1mm to the right.
 - Do we have room for mute switches/buttons on each channel ?
+- Consider using the [LPZW_TRS_MIDI](https://github.com/kay-lpzw/LPZW_TRS_MIDI/) circuit to support both Type A and Type B TRS MIDI wiring. This requires a dual-channel optocoupler (HCPL-0731 (SMD), HCPL-2631 or HCPL-2630 (THT), or HCPL-0631 (SMD)) which is more expensive than a 6N138. We could use two 6N138's but don't have space. We could use two TLP113's (SMD) but these are EOL.
