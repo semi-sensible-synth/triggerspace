@@ -13,32 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// Modified by Sonic Insurgence, June 2021
+// Modified by Sonic Insurgence, June 2021 — improved MIDI implementation.
+// Modified by Andrew Perry (semi-sensible synth), 2024 — MIDI out on channel 10.
 //
-// IMPROVED MIDI IMPLEMENTATION
+// Gritty-drumsynth, 2026
+// ----------------------
+// This fork keeps the Grids topographic sequencer, clock and MIDI intact, but
+// replaces the raw voltage-trigger outputs with three internally SYNTHESISED
+// 808/909-style drum voices rendered as 1-bit PDM (delta-sigma) on the existing
+// BD/SD/HH jacks. A synthesised low sine is hugely oversampled by the modulator,
+// so the kick comes out clean instead of an overdriven 1-bit sample.
 //
-// Set the tempo knop to its minimum position. After receiving a
-// MIDI Start or MIDI Continue message Grids switches into a
-// "clocked_by_midi" mode. In this mode Grids advances with every
-// MIDI clock message, whereas a rising edge at its clock input
-// no longer has an effect. The MIDI Start message also resets
-// the Grids engine.
-// As an external reset in "clocked_by_midi" mode would break
-// the synchronization with the external MIDI master device the
-// function of the reset input as well as the reset button changes.
-// They now assume a "mute" functionality that suppresses all drum
-// and accent outputs. When muted all three output leds will light
-// up permanently.
-// To leave the "clocked_by_midi" mode turn the tempo knob to the
-// right to activate internal clocking.
-//
-// I also disabled the retriggering of the outputs when a
-// reset signal has been received.
-
-// Modified by Andrew Perry (semi-sensible synth), 2024
-// Added MIDI out drum triggers on channel 10
+// Two ISRs, on two timers:
+//   * TIMER2 (~8 kHz, unchanged): the Grids control tick — clock, sequencer,
+//     MIDI-in, tap button, LEDs. It no longer writes the 595; a sequencer
+//     trigger now fires a voice envelope (the single integration point in
+//     UpdateShiftRegister()).
+//   * TIMER1 (Fs = 31.25 kHz): the audio tick — runs one 1-bit sigma-delta
+//     modulator per drum jack on the currently-held voice sample and clocks the
+//     packed byte to the 74HC595. It is short and constant-time; because the
+//     TIMER2 control ISR is ISR_NOBLOCK, the audio ISR pre-empts it and keeps a
+//     steady PDM carrier.
+// The heavy per-voice synthesis runs in the main loop, paced by the audio ISR to
+// a fixed synth rate (Fs / kSynthDecimation ~= 7.8 kHz); the ISR just holds and
+// re-modulates the last sample (zero-order hold). This amortises the DSP math
+// out from under the hard-real-time 1-bit output loop.
 
 #include <avr/eeprom.h>
+#include <avr/pgmspace.h>
 
 #include "avrlib/adc.h"
 #include "avrlib/boot.h"
@@ -49,13 +51,11 @@
 #include "grids/hardware_config.h"
 #include "grids/pattern_generator.h"
 #include "grids/midi.h"
-// #include "avrlib/software_serial.h"
 
 using namespace avrlib;
 using namespace grids;
 
 Leds leds;
-// Inputs inputs;
 ResetInput reset_input;
 ButtonInput button_input;
 ClockInput clock_input;
@@ -63,6 +63,321 @@ ClockInput clock_input;
 AdcInputScanner adc;
 ShiftRegister shift_register;
 MidiIO midi;
+
+// ===========================================================================
+// Drum synthesis engine
+// ===========================================================================
+
+// Diagnostic: force a continuous ~220 Hz tone on all three drum jacks, ignoring
+// the sequencer / triggers / mute. Use it to verify the audio ISR + PDM + output
+// path independently of the trigger logic. Comment out for the real drum engine.
+//#define DRUMSYNTH_TEST_TONE
+
+// --- Sample clocks --------------------------------------------------------
+// Audio (PDM) ISR on Timer1, CTC, prescaler /1: Fs = F_CPU / (OCR1A + 1).
+// 16 MHz / 512 = 31.25 kHz.  Kept moderate so the full Grids control ISR (Timer2,
+// ~8 kHz) plus the main-loop synth all fit the 16 MHz budget with headroom; the
+// lower carrier also reconstructs better through the trigger output stage.
+// Synthesis is decimated by kSynthDecimation -> ~7.8 kHz synth rate (plenty for
+// a 55 Hz kick and a few-kHz hat).
+static const uint32_t kAudioRate  = 31250UL;
+static const uint16_t kOcr1a      = (F_CPU / kAudioRate) - 1;   // = 511 @ 16 MHz
+static const uint8_t  kSynthDecimation = 4;                     // -> ~7812 Hz
+static const uint32_t kSynthRate  = kAudioRate / kSynthDecimation;
+
+// Convert a frequency (Hz) to a 16-bit phase increment at the synth rate.
+// inc = f * 2^16 / Fs_synth.  (Compile-time for the voice defaults.)
+#define HZ_TO_INC(hz)  ((uint16_t)(((uint32_t)(hz) * 65536UL) / kSynthRate))
+
+// --- Signed sine, one period, 8-bit (-127..127), 256 entries --------------
+static const int8_t kSine[256] PROGMEM = {
+     0,    3,    6,    9,   12,   16,   19,   22,
+    25,   28,   31,   34,   37,   40,   43,   46,
+    49,   51,   54,   57,   60,   63,   65,   68,
+    71,   73,   76,   78,   81,   83,   85,   88,
+    90,   92,   94,   96,   98,  100,  102,  104,
+   106,  107,  109,  111,  112,  113,  115,  116,
+   117,  118,  120,  121,  122,  122,  123,  124,
+   125,  125,  126,  126,  126,  127,  127,  127,
+   127,  127,  127,  127,  126,  126,  126,  125,
+   125,  124,  123,  122,  122,  121,  120,  118,
+   117,  116,  115,  113,  112,  111,  109,  107,
+   106,  104,  102,  100,   98,   96,   94,   92,
+    90,   88,   85,   83,   81,   78,   76,   73,
+    71,   68,   65,   63,   60,   57,   54,   51,
+    49,   46,   43,   40,   37,   34,   31,   28,
+    25,   22,   19,   16,   12,    9,    6,    3,
+     0,   -3,   -6,   -9,  -12,  -16,  -19,  -22,
+   -25,  -28,  -31,  -34,  -37,  -40,  -43,  -46,
+   -49,  -51,  -54,  -57,  -60,  -63,  -65,  -68,
+   -71,  -73,  -76,  -78,  -81,  -83,  -85,  -88,
+   -90,  -92,  -94,  -96,  -98, -100, -102, -104,
+  -106, -107, -109, -111, -112, -113, -115, -116,
+  -117, -118, -120, -121, -122, -122, -123, -124,
+  -125, -125, -126, -126, -126, -127, -127, -127,
+  -127, -127, -127, -127, -126, -126, -126, -125,
+  -125, -124, -123, -122, -122, -121, -120, -118,
+  -117, -116, -115, -113, -112, -111, -109, -107,
+  -106, -104, -102, -100,  -98,  -96,  -94,  -92,
+   -90,  -88,  -85,  -83,  -81,  -78,  -76,  -73,
+   -71,  -68,  -65,  -63,  -60,  -57,  -54,  -51,
+   -49,  -46,  -43,  -40,  -37,  -34,  -31,  -28,
+   -25,  -22,  -19,  -16,  -12,   -9,   -6,   -3,
+};
+
+static inline int8_t Sine(uint8_t phase_hi)
+{
+  return (int8_t)pgm_read_byte(&kSine[phase_hi]);
+}
+
+// --- Voice parameters (RAM; defaults here, live-tunable via MIDI CC) -------
+// "Decay" values are the exponential retain-per-synth-tick coefficient (Q8):
+// higher = longer tail.  amp/pitch envelopes are 16-bit, x = U16U16MulShift16(x,d).
+struct VoiceParams {
+  uint16_t base_inc;     // steady-state pitch (phase increment @ synth rate)
+  uint16_t pitch_mod0;   // initial pitch-envelope excursion (added to base_inc)
+  uint16_t pitch_decay;  // pitch-env retain/tick, 16-bit (65536 = no decay)
+  uint16_t amp_decay;    // amp-env retain/tick, 16-bit
+  uint16_t noise_decay;  // 2nd (noise) amp-env retain/tick, 16-bit (snare/hat)
+  uint8_t  tone_level;   // tonal component level 0..255
+  uint8_t  noise_level;  // noise component level 0..255
+};
+
+// Kick, snare, hat defaults. Decays are 16-bit exponential retain-per-tick at the
+// ~7.8 kHz synth rate: tau_ms ~= -1000 / (ln(d/65536) * 7812). e.g. 65480 ~= 150 ms,
+// 65327 ~= 40 ms. (8-bit decays topped out near 16 ms -> everything was a click.)
+static VoiceParams params[3] = {
+  // base_inc            pitch_mod0                    pDecay aDecay nDecay tone noise
+  { HZ_TO_INC(55),  HZ_TO_INC(320) - HZ_TO_INC(55),   65120, 65480,     0, 255,   0 }, // BD kick
+  { HZ_TO_INC(190), HZ_TO_INC(120),                   65535, 65380, 65460, 150, 210 }, // SD snare
+  { HZ_TO_INC(1800), 0,                               65535, 65535, 65300,   0, 255 }, // HH hat (tone=metal amount)
+};
+
+// --- EEPROM persistence for the voice params -------------------------------
+// pattern_generator owns EEPROM bytes 0..1; the voice params live well clear of
+// it. A magic/version byte guards the block so a fresh chip (or a struct-layout
+// change) falls back to the compiled defaults above instead of loading garbage.
+static const uint16_t kVoiceEepromAddr  = 16;
+static const uint8_t  kVoiceEepromMagic = 0xD4;  // bump if VoiceParams changes
+
+static void SaveVoiceParams()
+{
+  eeprom_write_block(params, (void*)(kVoiceEepromAddr + 1), sizeof(params));
+  eeprom_write_byte((uint8_t*)kVoiceEepromAddr, kVoiceEepromMagic);
+}
+
+static void LoadVoiceParams()
+{
+  if (eeprom_read_byte((uint8_t*)kVoiceEepromAddr) == kVoiceEepromMagic)
+  {
+    eeprom_read_block(params, (const void*)(kVoiceEepromAddr + 1), sizeof(params));
+  }
+}
+
+// --- Per-voice runtime state ----------------------------------------------
+static uint16_t v_phase[3];       // oscillator phase accumulator
+static uint16_t v_pitch_mod[3];   // decaying pitch excursion
+static uint16_t v_amp[3];         // tonal amplitude envelope (0..0xffff)
+static uint16_t v_namp[3];        // noise amplitude envelope (0..0xffff)
+static uint16_t lfsr = 0xACE1u;   // shared noise generator
+static int8_t   noise_prev;       // for the 1st-difference high-pass
+
+// Per-hit copies of the pitch / decay params, latched at TriggerVoice() so the
+// performance-mode Randomness knob can jitter them per hit without touching the
+// stored params[] (see ParamJitter/JitterDecay).
+static uint16_t v_base_inc[3];    // this hit's pitch (params.base_inc +/- jitter)
+static uint16_t v_amp_decay[3];   // this hit's amp-env decay
+static uint16_t v_namp_decay[3];  // this hit's noise-env decay
+
+// The current instantaneous voice output (signed, ~-128..127). Written by the
+// main-loop synth, read by the audio ISR — single bytes, atomic on AVR.
+static volatile int8_t voice_sample[3] = { 0, 0, 0 };
+// Accent-jack gate bits (0x08 BD, 0x10 SD, 0x20 HH), set while an accented hit
+// is sounding.  ORed into the 595 byte by the audio ISR.
+static volatile uint8_t accent_bits = 0;
+
+// Trigger latches: control ISR / MIDI-in raise a bit per voice, synth consumes.
+static volatile uint8_t v_trigger = 0;   // bit i = fire voice i
+static volatile uint8_t v_accent  = 0;   // bit i = that hit is accented
+
+// Synth pacing: audio ISR bumps this once per kSynthDecimation ticks; the main
+// loop renders that many samples. Keeps the heavy DSP out of the ISR.
+static volatile uint8_t synth_pending = 0;
+
+static inline uint8_t NextNoise()
+{
+  // 16-bit Galois LFSR, taps 0xB400.
+  uint8_t lsb = lfsr & 1u;
+  lfsr >>= 1;
+  if (lsb) lfsr ^= 0xB400u;
+  return (uint8_t)(lfsr >> 8);
+}
+
+// Per-hit parameter jitter driven by the performance-mode Randomness/chaos knob
+// (0..255). Returns a signed perturbation of `base`, scaled by chaos and by
+// max_q10 = the maximum |delta|/base at full chaos, in 1/1024 units (20 ~= 2%,
+// 205 ~= 20%). chaos=0 => no variation. Shared noise LFSR gives the sign/size.
+static int16_t ParamJitter(uint16_t base, uint8_t chaos, uint8_t max_q10)
+{
+  int8_t r = (int8_t)NextNoise();                 // -128..127
+  int16_t s = ((int16_t)chaos * r) >> 8;          // ~ -128..126, scaled by chaos
+  return (int16_t)(((int32_t)base * s * max_q10) >> 17);
+}
+
+// Jitter a decay COEFFICIENT by perturbing its rate (65536-decay) rather than
+// the near-65536 coefficient itself, so the variation lands in decay *time* and
+// can't collapse the tail to a click.
+static uint16_t JitterDecay(uint16_t decay, uint8_t chaos, uint8_t max_q10)
+{
+  uint16_t rate = 65536u - decay;                 // 1..65536 (bigger = shorter)
+  int32_t nr = (int32_t)rate + ParamJitter(rate, chaos, max_q10);
+  if (nr < 1) nr = 1; else if (nr > 8000) nr = 8000;
+  return (uint16_t)(65536u - (uint16_t)nr);
+}
+
+// Start (or retrigger) a voice. Accent lengthens/brightens by boosting the
+// initial envelope headroom. All per-hit values are latched here, jittered by
+// the current chaos setting so no two hits are identical (chaos=0 => identical).
+// Pitch drift is far more audible than level/length drift, so it is kept subtle
+// (+/-2%) and only engages across the top ~80% of the knob; level and length
+// get the full +/-20%.
+static void TriggerVoice(uint8_t v, bool accent)
+{
+  uint8_t chaos = pattern_generator.mutable_settings()->options.drums.randomness;
+  uint8_t chaos_pitch = 0;                         // gated: dead in bottom ~20%
+  if (chaos > 51) { uint8_t d = chaos - 51; chaos_pitch = d + (d >> 2); } // ->0..255
+
+  VoiceParams &p = params[v];
+
+  int32_t amp = accent ? 0xffff : 0xc000;
+  amp += ParamJitter((uint16_t)amp, chaos, 205);  // level: +/-20%
+  if (amp < 0x4000) amp = 0x4000; else if (amp > 0xffff) amp = 0xffff;
+
+  v_phase[v]      = 0;
+  v_base_inc[v]   = p.base_inc + ParamJitter(p.base_inc, chaos_pitch, 20);  // +/-2%
+  v_pitch_mod[v]  = p.pitch_mod0;
+  v_amp[v]        = (uint16_t)amp;
+  v_namp[v]       = (uint16_t)amp;
+  v_amp_decay[v]  = JitterDecay(p.amp_decay,   chaos, 205);  // length: +/-20%
+  v_namp_decay[v] = JitterDecay(p.noise_decay, chaos, 205);  // length: +/-20%
+}
+
+// One synth sample for all three voices -> voice_sample[]. Runs ~7.8 kHz in the
+// main loop. Consumes the trigger latches first (atomically).
+static void RenderVoices()
+{
+#ifdef DRUMSYNTH_TEST_TONE
+  // Continuous 220 Hz test tone on all three jacks (bypasses everything below).
+  static uint16_t tphase;
+  tphase += HZ_TO_INC(220);
+  int8_t t = (int8_t)S16U8MulShift8(Sine(tphase >> 8), 220);
+  voice_sample[0] = t;
+  voice_sample[1] = t;
+  voice_sample[2] = t;
+  return;
+#endif
+
+  // Consume the trigger latches (set by the Timer2 ISR); read-and-clear under
+  // cli so we don't drop a trigger raised between the read and the clear.
+  cli();
+  uint8_t trig = v_trigger; v_trigger = 0;
+  uint8_t acc  = v_accent;  v_accent  = 0;
+  sei();
+  for (uint8_t v = 0; v < 3; ++v) {
+    if (trig & (1 << v)) {
+      TriggerVoice(v, acc & (1 << v));
+    }
+  }
+
+  uint8_t new_accent = 0;
+  int8_t noise = (int8_t)(NextNoise() - 128);
+  int16_t noise_hp = (int16_t)noise - noise_prev;   // 1st-difference high-pass
+  noise_prev = noise;
+
+  // ---- Kick: pitch-swept sine * exp amp env -----------------------------
+  {
+    VoiceParams &p = params[0];
+    v_pitch_mod[0] = U16U16MulShift16(v_pitch_mod[0], p.pitch_decay);
+    v_phase[0] += v_base_inc[0] + v_pitch_mod[0];
+    v_amp[0] = U16U16MulShift16(v_amp[0], v_amp_decay[0]);
+    int16_t s = S16U8MulShift8(Sine(v_phase[0] >> 8), (uint8_t)(v_amp[0] >> 8));
+    voice_sample[0] = (int8_t)s;
+    if (v_amp[0] > 0x1400) new_accent |= 0x08;  // accent-jack gate
+  }
+
+  // ---- Snare: tonal body (sine) + high-passed noise, separate envs -------
+  {
+    VoiceParams &p = params[1];
+    v_phase[1] += v_base_inc[1];
+    v_amp[1]  = U16U16MulShift16(v_amp[1],  v_amp_decay[1]);
+    v_namp[1] = U16U16MulShift16(v_namp[1], v_namp_decay[1]);
+    int16_t body  = S16U8MulShift8(Sine(v_phase[1] >> 8), (uint8_t)(v_amp[1] >> 8));
+    int16_t nz    = S16U8MulShift8(noise_hp, (uint8_t)(v_namp[1] >> 8));
+    int16_t s = ((body * p.tone_level) >> 8) + ((nz * p.noise_level) >> 8);
+    if (s > 127) s = 127; else if (s < -128) s = -128;
+    voice_sample[1] = (int8_t)s;
+    if (v_amp[1] > 0x1400) new_accent |= 0x10;
+  }
+
+  // ---- Hat: high-passed noise + metallic tone, short exp env ------------
+  // tone_level blends bright noise (0) <-> two-oscillator metallic "clang" (255);
+  // base_inc sets the metal pitch, noise_level the overall hat level. Default
+  // tone_level=0 => pure noise (unchanged from the original hat).
+  {
+    VoiceParams &p = params[2];
+    static uint16_t hmetal_phase;
+    v_namp[2] = U16U16MulShift16(v_namp[2], v_namp_decay[2]);
+    uint8_t env = (uint8_t)(v_namp[2] >> 8);
+    // two detuned squares (~1.625x apart) XORed -> cheap inharmonic metal tone.
+    v_phase[2]   += v_base_inc[2];
+    hmetal_phase += v_base_inc[2] + (v_base_inc[2] >> 1) + (v_base_inc[2] >> 3);
+    int16_t metal = ((v_phase[2] ^ hmetal_phase) & 0x8000) ? 120 : -120;
+    int16_t mix = (int16_t)(((int32_t)noise_hp * (255 - p.tone_level)) >> 8)
+                + (int16_t)(((int32_t)metal * p.tone_level) >> 8);
+    int16_t s = S16U8MulShift8(mix, env);
+    s = S16U8MulShift8(s, p.noise_level);
+    if (s > 127) s = 127; else if (s < -128) s = -128;
+    voice_sample[2] = (int8_t)s;
+    if (v_namp[2] > 0x1400) new_accent |= 0x20;
+  }
+
+  accent_bits = new_accent;
+}
+
+// Audio ISR: three 1-bit first-order sigma-delta modulators (one per drum jack)
+// on the held voice samples, packed and clocked to the 595. Constant-time.
+ISR(TIMER1_COMPA_vect)
+{
+  static uint16_t dsm0, dsm1, dsm2;
+  static uint8_t decimator;
+
+  uint8_t out = accent_bits;   // accent gates on bits 0x08/0x10/0x20
+
+  dsm0 += (uint8_t)((uint8_t)voice_sample[0] + 128);
+  if (dsm0 & 0xFF00) { out |= 0x01; dsm0 &= 0x00FF; }
+  dsm1 += (uint8_t)((uint8_t)voice_sample[1] + 128);
+  if (dsm1 & 0xFF00) { out |= 0x02; dsm1 &= 0x00FF; }
+  dsm2 += (uint8_t)((uint8_t)voice_sample[2] + 128);
+  if (dsm2 & 0xFF00) { out |= 0x04; dsm2 &= 0x00FF; }
+
+  // Hand-written SPI to the 74HC595 (hot path — avoids a non-inlined call and a
+  // full register save). Latch/SS is PB2: pulse low, clock the byte, pulse high.
+  PORTB &= ~_BV(PB2);
+  SPDR = out;
+  while (!(SPSR & _BV(SPIF)))
+    ;
+  PORTB |= _BV(PB2);
+
+  // Pace synthesis at the decimated rate; the main loop does the actual DSP.
+  if (++decimator >= kSynthDecimation) {
+    decimator = 0;
+    ++synth_pending;
+  }
+}
+
+// ===========================================================================
+// Grids sequencer / clock / control (largely unchanged from Gritty-Grids)
+// ===========================================================================
 
 enum Parameter
 {
@@ -84,23 +399,40 @@ int8_t swing_amount;
 
 volatile Parameter parameter = PARAMETER_NONE;
 volatile bool long_press_detected = false;
+
+// Edit pages, cycled by a TAP long-hold: PERFORM (normal Grids play) -> META
+// (the PARAMETER_* meta-params above) -> VOICE (drum-voice tuning) -> PERFORM.
+// The clock, sequencer and audio keep running in every page so edits preview
+// live; a page only changes what the six knobs edit.
+enum EditPage
+{
+  PAGE_PERFORM,
+  PAGE_META,
+  PAGE_VOICE
+};
+volatile uint8_t edit_page = PAGE_PERFORM;
+volatile uint8_t voice_edit_target = 0;   // which voice (0=BD,1=SD,2=HH) VOICE edits
+volatile bool voice_target_changed = false; // TAP short-press asked to re-snapshot
 const uint8_t kUpdatePeriod = F_CPU / 32 / 8000;
-// How long (in ~8 kHz update ticks) we remember that a MIDI clock byte was
-// seen. Used to decide whether an unmute button press should also act as an
-// internal MIDI Start (~1 second).
 const uint16_t kMidiClockTimeout = 8000;
 
-uint8_t clocked_by_midi = 0; // 1 = MIDI Clock advances Grids, 2 = MIDI Stop received
-uint8_t mute = 0;            // 1 = drum and accent outputs are muted
-uint8_t external_clock = 0;  // 1 = Grids is in external clock mode (clock knob = min,
-                             // accept pulses on clock input or by midi clock messages)
-uint16_t midi_clock_timeout = 0; // counts down; non-zero => a MIDI clock byte
-                                 // was seen recently (see kMidiClockTimeout)
+uint8_t clocked_by_midi = 0;
+uint8_t mute = 0;
+uint8_t external_clock = 0;
+uint16_t midi_clock_timeout = 0;
+
+// MIDI-in decode results, filled by PollMidiIn() (run every control tick) and
+// consumed by HandleClockResetInputs(). Keeping a single MIDI reader lets us add
+// note-in triggering without disturbing the validated clock behaviour.
+volatile uint8_t midi_clock_ticks = 0;   // pending 0xF8 ticks to process
+volatile bool midi_start_flag = false;   // 0xFA
+volatile bool midi_continue_flag = false;// 0xFB
+volatile bool midi_stop_flag = false;    // 0xFC
 
 inline void UpdateLeds()
 {
   uint8_t pattern;
-  if (parameter == PARAMETER_NONE)
+  if (edit_page == PAGE_PERFORM)
   {
     if (led_off_timer)
     {
@@ -112,8 +444,7 @@ inline void UpdateLeds()
     }
     if (mute)
     {
-      // indicate muted outputs by turning
-      led_pattern ^= LED_BD | LED_SD | LED_HH; // all 3 leds on (at 50 % duty cycle)
+      led_pattern ^= LED_BD | LED_SD | LED_HH;
     }
     pattern = led_pattern;
     if (pattern_generator.tap_tempo())
@@ -129,6 +460,22 @@ inline void UpdateLeds()
       {
         pattern |= LED_CLOCK;
       }
+    }
+  }
+  else if (edit_page == PAGE_VOICE)
+  {
+    // Voice-tuning page: LED_CLOCK steady + the selected voice's channel LED
+    // blinking (~4 Hz) so it's unmistakable from the meta page. Short-press TAP
+    // cycles the voice (see HandleTapButton).
+    static uint16_t blink;
+    ++blink;
+    pattern = LED_CLOCK;
+    uint8_t vled = (voice_edit_target == 0) ? LED_BD
+                 : (voice_edit_target == 1) ? LED_SD
+                                            : LED_HH;
+    if (blink & 0x0400)
+    {
+      pattern |= vled;
     }
   }
   else
@@ -181,15 +528,15 @@ inline void UpdateLeds()
 inline void BufferMidiMessages(uint8_t state)
 {
   if (state & 0x01)
-  { // BD
+  {
     grids::MidiDevice::BufferNote(MIDI_CHANNEL, BD_NOTE, 0x7f);
   }
   if (state & 0x02)
-  { // SD
+  {
     grids::MidiDevice::BufferNote(MIDI_CHANNEL, SD_NOTE, 0x7f);
   }
   if (state & 0x04)
-  { // HH
+  {
     if (state & 0x20)
     {
       grids::MidiDevice::BufferNote(MIDI_CHANNEL, HH_ACCENT_NOTE, 0x7f);
@@ -201,6 +548,9 @@ inline void BufferMidiMessages(uint8_t state)
   }
 }
 
+// Integration point: a sequencer trigger no longer writes a raw bit to the 595
+// (the audio ISR owns it now) — instead a newly-set drum bit FIRES that voice's
+// envelope. Accents come from the matching accent bit. MIDI-out is unchanged.
 inline void UpdateShiftRegister()
 {
   static uint8_t previous_state = 0;
@@ -208,36 +558,37 @@ inline void UpdateShiftRegister()
 
   if (mute)
   {
-    state &= ~(0x07); // clear drum bits (BD, SD, HH)
+    state &= ~(0x07);
     if (pattern_generator.output_mode() == OUTPUT_MODE_DRUMS)
     {
       if (pattern_generator.output_clock())
       {
-        state &= ~(OUTPUT_BIT_COMMON); // clear common accent bit
+        state &= ~(OUTPUT_BIT_COMMON);
       }
       else
       {
-        state &= ~(0x07 << 3); // clear all 3 accent bits
+        state &= ~(0x07 << 3);
       }
     }
   }
 
   if (state != previous_state)
   {
+    uint8_t newly_set = state & ~previous_state;   // rising drum edges
     previous_state = state;
-    shift_register.Write(state);
 
-    // Buffer MIDI messages
+    if (newly_set & 0x01) { v_trigger |= 0x01; if (state & 0x08) v_accent |= 0x01; }
+    if (newly_set & 0x02) { v_trigger |= 0x02; if (state & 0x10) v_accent |= 0x02; }
+    if (newly_set & 0x04) { v_trigger |= 0x04; if (state & 0x20) v_accent |= 0x04; }
+
     BufferMidiMessages(state);
 
     if (!state)
     {
-      // Switch off the LEDs, but not now.
       led_off_timer = 200;
     }
     else
     {
-      // Switch on the LEDs with a new pattern.
       led_pattern = pattern_generator.led_pattern();
       led_off_timer = 0;
     }
@@ -246,19 +597,89 @@ inline void UpdateShiftRegister()
 
 uint8_t ticks_granularity[] = {6, 3, 1};
 
+// Drain all pending MIDI-in bytes once per control tick. Realtime clock bytes
+// are turned into flags/counters for HandleClockResetInputs; note-on messages on
+// the drum channel trigger voices directly (independent of the sequencer).
+inline void PollMidiIn()
+{
+  static uint8_t running_status = 0;
+  static uint8_t data0 = 0;
+  static uint8_t data_index = 0;
+
+  uint8_t guard = 8;   // bound the per-tick work
+  while (midi.readable() && guard--)
+  {
+    uint8_t byte = midi.ImmediateRead();
+
+    if (byte >= 0xf8)          // system realtime — may interleave anywhere
+    {
+      if (byte == 0xf8) { if (midi_clock_ticks < 250) ++midi_clock_ticks; }
+      else if (byte == 0xfa) { midi_start_flag = true; }
+      else if (byte == 0xfb) { midi_continue_flag = true; }
+      else if (byte == 0xfc) { midi_stop_flag = true; }
+      continue;
+    }
+
+    if (byte & 0x80)           // status byte
+    {
+      running_status = byte;
+      data_index = 0;
+      continue;
+    }
+
+    if (!running_status) continue;   // data with no status — ignore
+
+    if (data_index == 0)
+    {
+      data0 = byte;
+      data_index = 1;
+    }
+    else
+    {
+      uint8_t status = running_status & 0xf0;
+      uint8_t channel = running_status & 0x0f;
+      data_index = 0;         // 2-data-byte messages complete
+      if (channel == MIDI_CHANNEL)
+      {
+        // note-on (with velocity>0) triggers a voice; note-off / vel 0 ignored.
+        if (status == 0x90 && byte > 0)
+        {
+          bool accent = byte >= 0x60;
+          if (data0 == BD_NOTE || data0 == 0x23) { v_trigger |= 0x01; if (accent) v_accent |= 0x01; }
+          else if (data0 == SD_NOTE || data0 == 0x25) { v_trigger |= 0x02; if (accent) v_accent |= 0x02; }
+          else if (data0 == HH_NOTE || data0 == HH_ACCENT_NOTE) { v_trigger |= 0x04; if (accent) v_accent |= 0x04; }
+        }
+        else if (status == 0xb0)
+        {
+          // control change -> live voice tuning (CC 20..27).
+          switch (data0)
+          {
+          case 20: params[0].base_inc = HZ_TO_INC(30) + (uint16_t)byte * 3; break;  // kick pitch
+          case 21: params[0].amp_decay = 65000 + (uint16_t)byte * 4; break;         // kick decay
+          case 22: params[1].base_inc = HZ_TO_INC(120) + (uint16_t)byte * 6; break; // snare tone
+          case 23: params[1].amp_decay = 65000 + (uint16_t)byte * 4; break;         // snare body decay
+          case 24: params[1].noise_level = byte << 1; break;                        // snare noise mix
+          case 25: params[1].noise_decay = 65000 + (uint16_t)byte * 4; break;       // snare noise decay
+          case 26: params[2].noise_decay = 64700 + (uint16_t)byte * 6; break;       // hat decay (open/closed)
+          case 27: params[2].noise_level = byte << 1; break;                        // hat level
+          default: break;
+          }
+        }
+      }
+    }
+  }
+}
+
 inline void HandleClockResetInputs()
 {
-  // static uint8_t previous_inputs;
   static bool previous_clock_value;
   static bool previous_reset_value;
 
-  // Let the "MIDI clock seen recently" flag decay.
   if (midi_clock_timeout)
   {
     --midi_clock_timeout;
   }
 
-  // uint8_t inputs_value = ~inputs.Read();
   bool clock_value = !clock_input.Read();
   bool reset_value = !reset_input.Read();
   uint8_t num_ticks = 0;
@@ -270,7 +691,7 @@ inline void HandleClockResetInputs()
     if (!external_clock)
     {
       external_clock = 1;
-      mute = 1; // activate mute when entering external clock mode
+      mute = 1;
     }
     if ((clock_value) && !(previous_clock_value))
     {
@@ -283,31 +704,32 @@ inline void HandleClockResetInputs()
     {
       pattern_generator.ClockFallingEdge();
     }
-    if (midi.readable())
+    // MIDI realtime, decoded in PollMidiIn().
+    if (midi_clock_ticks)
     {
-      uint8_t byte = midi.ImmediateRead();
-      if (byte == 0xf8)
-      { // MIDI Clock message
-        midi_clock_timeout = kMidiClockTimeout; // remember we're getting MIDI clock
-        if (clocked_by_midi == 1)
-        {
-          num_ticks = 1;
-        }
+      midi_clock_timeout = kMidiClockTimeout;
+      if (clocked_by_midi == 1)
+      {
+        num_ticks = 1;
       }
-      else if (byte == 0xfa)
-      { // MIDI Start message
-        pattern_generator.Reset();
-        clocked_by_midi = 1;
-      }
-      else if (byte == 0xfb)
-      { // MIDI Continue message
-        clocked_by_midi = 1;
-      }
-      else if (byte == 0xfc)
-      { // MIDI Stop message
-        clocked_by_midi = 2;
-        grids::MidiDevice::BufferAllNotesOff(MIDI_CHANNEL);
-      }
+      --midi_clock_ticks;
+    }
+    if (midi_start_flag)
+    {
+      midi_start_flag = false;
+      pattern_generator.Reset();
+      clocked_by_midi = 1;
+    }
+    if (midi_continue_flag)
+    {
+      midi_continue_flag = false;
+      clocked_by_midi = 1;
+    }
+    if (midi_stop_flag)
+    {
+      midi_stop_flag = false;
+      clocked_by_midi = 2;
+      grids::MidiDevice::BufferAllNotesOff(MIDI_CHANNEL);
     }
   }
   else
@@ -315,7 +737,7 @@ inline void HandleClockResetInputs()
     if (external_clock)
     {
       external_clock = 0;
-      mute = 0; // deactivate mute when leaving external clock mode
+      mute = 0;
       led_pattern = 0;
     }
     if (clocked_by_midi)
@@ -341,11 +763,11 @@ inline void HandleClockResetInputs()
   {
     if ((reset_value) && !(previous_reset_value))
     {
-      mute = 1; // activate mute on rising edge
+      mute = 1;
     }
     if (!(reset_value) && (previous_reset_value))
     {
-      mute = 0; // deactivate mute on falling edge
+      mute = 0;
       led_pattern = 0;
     }
   }
@@ -354,34 +776,12 @@ inline void HandleClockResetInputs()
     if ((reset_value) && !(previous_reset_value))
     {
       pattern_generator.Reset();
-      // AllNotesOff();
-
-      // !! HACK AHEAD !!
-      //
-      // Earlier versions of the firmware retriggered the outputs whenever a
-      // RESET signal was received. This allowed for nice drill'n'bass effects,
-      // but made synchronization with another sequencer a bit glitchy (risk of
-      // double notes at the beginning of a pattern). It was later decided
-      // to remove this behaviour and make the RESET transparent (just set the
-      // step index without producing any trigger) - similar to the MIDI START
-      // message. However, the factory testing script relies on the old behaviour.
-      // To solve this problem, we reproduce this behaviour the first 5 times the
-      // module is powered. After the 5th power-on (or settings change) cycle,
-      // this odd behaviour disappears.
-      /* ### As we don't do factory testing we don't need the hack. ###
-      if (pattern_generator.factory_testing() ||
-        clock.bpm() >= 40 ||
-        clock.locked()) {
-      */
       if (clock.bpm() >= 40 || clock.locked())
       {
-        // I don't like the retriggering. So I comment it out.
-        // pattern_generator.Retrigger();
         clock.Reset();
       }
     }
   }
-  // previous_inputs = inputs_value;
   previous_clock_value = clock_value;
   previous_reset_value = reset_value;
 
@@ -413,18 +813,17 @@ inline void HandleTapButton()
 
   if (switch_state == SWITCH_STATE_JUST_PRESSED)
   {
-    if (parameter == PARAMETER_NONE)
+    if (edit_page == PAGE_PERFORM)
     {
       if (clocked_by_midi == 2)
-      { // MIDI master sent Stop: a tap re-arms and restarts (internal Start)
-        // so we follow the incoming clock again, starting from step 0.
+      {
         pattern_generator.Reset();
         clocked_by_midi = 1;
         mute = 0;
         led_pattern = 0;
       }
       else if (clocked_by_midi)
-      { // clocked_by_midi == 1: button toggles mute state
+      {
         if (mute)
         {
           mute = 0;
@@ -438,15 +837,10 @@ inline void HandleTapButton()
       else
       {
         if (external_clock == 1)
-        {           // in external clock mode
-          mute = 0; // the first button press unmutes the outputs
+        {
+          mute = 0;
           led_pattern = 0;
           external_clock = 2;
-          // If MIDI clock is streaming but the master never sent a MIDI Start,
-          // treat this first unmute press as an internal Start so that bare
-          // MIDI clock (0xF8) messages advance the sequencer. When no MIDI
-          // clock has been seen we leave clocked_by_midi alone so analog
-          // trigger clocking via the clock input still works.
           if (midi_clock_timeout)
           {
             pattern_generator.Reset();
@@ -456,11 +850,6 @@ inline void HandleTapButton()
         if (!pattern_generator.tap_tempo())
         {
           pattern_generator.Reset();
-          /*  no need for the hack (see above)
-          if (pattern_generator.factory_testing() ||
-              clock.bpm() >= 40 ||
-              clock.locked()) {
-*/
           if (clock.bpm() >= 40 || clock.locked())
           {
             clock.Reset();
@@ -483,6 +872,18 @@ inline void HandleTapButton()
         }
       }
     }
+    else if (edit_page == PAGE_VOICE)
+    {
+      // In the voice-tuning page a short TAP cycles which drum voice the knobs
+      // edit (BD -> SD -> HH); ask ScanPots to re-snapshot the pots so the knob
+      // positions don't instantly overwrite the newly-selected voice's params.
+      ++voice_edit_target;
+      if (voice_edit_target > 2)
+      {
+        voice_edit_target = 0;
+      }
+      voice_target_changed = true;
+    }
     switch_hold_time = 0;
   }
   else if (switch_state == SWITCH_STATE_PRESSED)
@@ -503,11 +904,11 @@ ISR(TIMER2_COMPA_vect, ISR_NOBLOCK)
   ++switch_debounce_prescaler;
   if (switch_debounce_prescaler >= 10)
   {
-    // Debounce RESET/TAP switch and perform switch action.
     HandleTapButton();
     switch_debounce_prescaler = 0;
   }
 
+  PollMidiIn();
   HandleClockResetInputs();
 
   adc.Scan();
@@ -519,28 +920,45 @@ ISR(TIMER2_COMPA_vect, ISR_NOBLOCK)
 
 static int16_t pot_values[8];
 
+static void SnapshotPots()
+{
+  for (uint8_t i = 0; i < ADC_CHANNEL_LAST; ++i)
+  {
+    pot_values[i] = adc.Read8(i);
+  }
+}
+
 void ScanPots()
 {
   if (long_press_detected)
   {
-    if (parameter == PARAMETER_NONE)
+    // Cycle the edit page: PERFORM -> META -> VOICE -> PERFORM. Snapshot the pot
+    // positions on each entry so a knob only takes effect once moved past the
+    // catch threshold, and persist to EEPROM on the way out of each edit page.
+    if (edit_page == PAGE_PERFORM)
     {
-      // Freeze pot values
-      for (uint8_t i = 0; i < 8; ++i)
-      {
-        pot_values[i] = adc.Read8(i);
-      }
+      SnapshotPots();
+      edit_page = PAGE_META;
       parameter = PARAMETER_WAITING;
+    }
+    else if (edit_page == PAGE_META)
+    {
+      pattern_generator.SaveSettings();
+      SnapshotPots();
+      edit_page = PAGE_VOICE;
+      parameter = PARAMETER_NONE;
+      voice_edit_target = 0;
     }
     else
     {
+      SaveVoiceParams();
+      edit_page = PAGE_PERFORM;
       parameter = PARAMETER_NONE;
-      pattern_generator.SaveSettings();
     }
     long_press_detected = false;
   }
 
-  if (parameter == PARAMETER_NONE)
+  if (edit_page == PAGE_PERFORM)
   {
     uint8_t bpm = adc.Read8(ADC_CHANNEL_TEMPO);
     bpm = U8U8MulShift8(bpm, 220) + 20;
@@ -555,8 +973,63 @@ void ScanPots()
     settings->density[0] = ~adc.Read8(ADC_CHANNEL_BD_DENSITY_CV);
     settings->density[1] = ~adc.Read8(ADC_CHANNEL_SD_DENSITY_CV);
     settings->density[2] = ~adc.Read8(ADC_CHANNEL_HH_DENSITY_CV);
+    return;
   }
-  else
+
+  if (edit_page == PAGE_VOICE)
+  {
+    // Drum-voice tuning. Each knob edits one param of the currently-selected
+    // voice (short-press TAP cycles the voice). Catch behaviour as in META: a
+    // knob only takes over its param once moved. base_inc/pitch envelopes only
+    // affect the kick's audible pitch; on snare/hat those knobs are inert.
+    if (voice_target_changed)
+    {
+      voice_target_changed = false;
+      SnapshotPots();
+    }
+    VoiceParams &p = params[voice_edit_target];
+    for (uint8_t i = 0; i < ADC_CHANNEL_LAST; ++i)
+    {
+      int16_t value = adc.Read8(i);
+      int16_t delta = value - pot_values[i];
+      if (delta < 0)
+      {
+        delta = -delta;
+      }
+      if (delta > 24)
+      {
+        pot_values[i] = value;
+        uint8_t u = (uint8_t)value;
+        switch (i)
+        {
+        case ADC_CHANNEL_BD_DENSITY_CV:  // pitch: ~20 Hz .. ~2 kHz
+          p.base_inc = HZ_TO_INC(20) + (uint16_t)u * 64;
+          break;
+        case ADC_CHANNEL_SD_DENSITY_CV:  // amp/body length: ~16 .. ~320 ms
+          p.amp_decay = 65000 + (uint16_t)u * 2;
+          break;
+        case ADC_CHANNEL_HH_DENSITY_CV:  // pitch-env depth (kick "punch")
+          p.pitch_mod0 = (uint16_t)u * 20;
+          break;
+        case ADC_CHANNEL_X_CV:           // tonal component level
+          p.tone_level = u;
+          break;
+        case ADC_CHANNEL_Y_CV:           // noise component level
+          p.noise_level = u;
+          break;
+        case ADC_CHANNEL_RANDOMNESS_CV:  // noise length: ~16 .. ~320 ms
+          p.noise_decay = 65000 + (uint16_t)u * 2;
+          break;
+        case ADC_CHANNEL_TEMPO:          // pitch-env length (kick sweep time)
+          p.pitch_decay = 64800 + (uint16_t)u * 2;
+          break;
+        }
+      }
+    }
+    return;
+  }
+
+  // PAGE_META: the original Grids meta-parameter edit loop.
   {
     for (uint8_t i = 0; i < 8; ++i)
     {
@@ -612,44 +1085,10 @@ void ScanPots()
   }
 }
 
-void TestMidiOutput()
-{
-  // Simple direct MIDI test - Bass Drum note
-  midi.Write(0x99); // Note On, Channel 10
-  midi.Write(0x24); // Bass Drum
-  midi.Write(0x7F); // Full velocity
-  _delay_ms(500);   // Wait half second
-  midi.Write(0x89); // Note Off, Channel 10
-  midi.Write(0x24); // Bass Drum
-  midi.Write(0x00); // Zero velocity
-
-  // simpler
-  // midi.Write(0x90); // Just Note On, channel 1
-  //_delay_ms(1000);  // Longer delay
-
-  // send a stream of simple alternating 0101 0101 and 1010 1010
-  /*
-  while (!(UCSR0A & (1 << UDRE0)))
-    ;
-  UDR0 = 0x55; // Alternating 0101 0101
-  _delay_ms(100);
-  while (!(UCSR0A & (1 << UDRE0)))
-    ;
-  UDR0 = 0xAA; // Alternating 1010 1010
-  _delay_ms(100);
-  */
-}
-
 void Init()
 {
-
-#if (F_CPU != 16000000UL)
-// #error "Wrong F_CPU setting - should be 16MHz"
-#endif
-
   sei();
 
-  // Configure UART for MIDI
   grids::MidiDevice::Init(midi);
 
   leds.set_mode(DIGITAL_OUTPUT);
@@ -665,23 +1104,22 @@ void Init()
   pattern_generator.Init();
   shift_register.Init();
 
+  // Restore any saved drum-voice tuning (falls back to the compiled defaults on
+  // a fresh chip). Done before the timers start so no ISR reads a half-loaded
+  // params[] mid-copy.
+  LoadVoiceParams();
+
+  // Timer2: ~8 kHz Grids control tick (CTC, prescaler /32).
   TCCR2A = _BV(WGM21);
   TCCR2B = 3;
   OCR2A = kUpdatePeriod - 1;
-  TIMSK2 |= _BV(1);
+  TIMSK2 |= _BV(OCIE2A);
 
-  // Test MIDI output
-  /*
-  TestMidiOutput();
-  TestMidiOutput();
-  TestMidiOutput();
-  TestMidiOutput();
-
-  while (true)
-  {
-    _delay_ms(1000);
-  }
-  */
+  // Timer1: 31.25 kHz audio/PDM tick (CTC, prescaler /1).
+  TCCR1A = 0;
+  TCCR1B = _BV(WGM12) | _BV(CS10);
+  OCR1A = kOcr1a;
+  TIMSK1 |= _BV(OCIE1A);
 }
 
 int main(void)
@@ -692,17 +1130,29 @@ int main(void)
 
   while (1)
   {
-    // Use any spare cycles to read the CVs and update the potentiometers
+    // Render the synth samples the audio ISR has queued, but only a bounded
+    // batch per iteration so ScanPots() always gets to run — otherwise, if the
+    // synth ever can't quite keep up, synth_pending pins high and the pattern
+    // knobs (read in ScanPots) go dead. If the synth briefly lags it just plays
+    // catch-up; the knobs stay responsive.
+    uint8_t budget = 8;
+    while (synth_pending && budget--)
+    {
+      RenderVoices();
+      cli();
+      --synth_pending;
+      sei();
+    }
+
     ScanPots();
 
-    // Transmit MIDI messages from the buffer
-    cli(); // Disable interrupts to safely access buffer indices
-    bool has_messages = (buffer_tail != buffer_head);
-    sei(); // Re-enable interrupts
-
-    if (has_messages)
+    // Non-blocking MIDI-out: send a byte ONLY when the UART is ready, so a
+    // multi-note burst never stalls the loop (which would starve the synth and
+    // click the audio). We loop back and service synth_pending immediately.
+    if (buffer_tail != buffer_head && (UCSR0A & _BV(UDRE0)))
     {
-      grids::MidiDevice::SendBuffer();
+      UDR0 = output_buffer[buffer_tail];
+      buffer_tail = (buffer_tail + 1) % MIDI_BUFFER_SIZE;
     }
   }
 }

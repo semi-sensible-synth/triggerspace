@@ -1,144 +1,161 @@
-# Modified for triggerspace (NanoGris-MIDI)
+# Gritty-drumsynth
 
-- Clock pin is now D8 (PB0)
-- Serial Tx (PD1) is now MIDI out pin
-- Clock input, reset input and button (INPUT_SW_RESET) 
-  are now handled as individual boolean digital input pins rather than
-  packed into a bit-array as 'inputs'.
-- MIDI out drum triggers on channel 10
+A **synthesised drum-machine** firmware for the *triggerspace* (NanoGris-MIDI)
+Eurorack module. It keeps Grids' topographic drum **sequencer**, clock and MIDI,
+but replaces the raw voltage-trigger outputs with three internally **synthesised
+808/909-style drum voices** — kick, snare and hat — rendered as 1-bit PDM on the
+BD/SD/HH jacks.
 
-# Gritty Grids - An Improved MIDI Implementation for Grids
-Grids is a topographic (drum) sequencer for Eurorack modular synthesizers 
-developed by Mutable Instruments.
+Lineage: Mutable Instruments **Grids** (Émilie Gillet) → **Gritty-Grids** (Sonic
+Insurgence, improved MIDI) → **triggerspace** pin remap (Andrew Perry) → this
+synth fork. GPLv3.
 
-If you use a setup that is primarily based on MIDI you might want to 
-synchronize Grids to your MIDI master clock.
-The stock firmware of Grids offers only rudimentary support for a MIDI 
-interface. It resets the drum engine when it receives a MIDI Start message 
-and uses MIDI Clock messages to advance. However it does not care about 
-MIDI Stop or MIDI Continue messages. If, after pressing stop on your 
-MIDI master device, the master does not cease sending MIDI Clocks 
-(quite a common behaviour) Grids will go on 
-drumming forever.
+> This firmware is **mandatory** for triggerspace — the PCB moves the clock input
+> off D1 onto D8, freeing the D0/D1 UART for TRS-A MIDI, so stock Grids firmware
+> will not run unmodified. To run on original Grids hardware instead, set
+> `TRIGGERSPACE_PINOUT 0` in `grids/hardware_config.h` (moves the clock back to D1;
+> MIDI is then unavailable).
 
-The "Gritty Grids" firmware improves on this situation by properly 
-reacting to all MIDI Start, Stop, Continue and Clock messages. See 
-the [Gritty Grids demo video](https://youtu.be/vbTWLX3Ts00) on YouTube.
+## How it sounds / signal path
 
-### A MIDI Interface for Grids
-Fortunately Grids offers three pads on the back of its printed circuit 
-board that are waiting to become a MIDI IN interface.
+Each drum jack carries a **1-bit sigma-delta (PDM)** bitstream at a 31.25 kHz
+carrier. The voices are true synthesis (DDS sine + LFSR noise + exponential
+envelopes), oversampled by the modulator, so a clean low kick is possible from a
+single output pin.
 
-![Grids MIDI port](/images/grids-midi-port.jpg)
+**The raw output is a 5 V 1-bit stream and sounds fuzzy on its own** — it needs a
+low-pass to reconstruct. Options:
 
-Just connect the following simple circuit. It can easily be built on a 
-prototyping board.
+- Patch each jack through a Eurorack **filter/VCA** module, or
+- Fit a tiny **RC "dongle"** on the jack: the ~1 kΩ series resistor already on
+  the board + a small cap to ground (≈ 1–10 nF → ~16–80 kHz corner) tames the
+  carrier. This is the only outstanding hardware item; everything else is
+  software.
 
-![MIDI circuit](/images/midi-circuit.jpg)
+Outputs are 5 V logic level — AC-couple / attenuate for a Eurorack audio input.
 
-As a quick hack you might even succeed if you only take a 5-pin female 
-DIN jack making the following connections:
-* pin 2 (shield / ground) to Grids GND
-* pin 5 (current sink) to Grids RX>
+## Controls
 
-But beware: This is a hack. It DOES NOT COMPLY with the specification 
-of the MIDI standard. You lose the galvanic isolation of the MIDI 
-interface. It might or might not work. Try at your own risk.
+A **long-hold on the TAP button** (~0.5 s) cycles three edit pages:
 
-
-### Flashing the Firmware
-Use the in-system programmer of your choice (e. g. I use the 
-AVRisp MkII from Atmel) to flash the "gritty-grids.hex" file to 
-the AVR microcontroller on Grids. If you are not familiar with 
-flashing AVR controllers search the web for instructions.
-
-If you want to go back to the original stock firmware flash 
-"grids_original.hex".
-
-On Ubuntu 22.04, with a CH341 Nano clone, I needed to first disable `brltty` so it wouldn't claim the USB device. Do:
-```bash
-sudo systemctl stop brltty-udev.service
-sudo systemctl mask brltty-udev.service
-sudo systemctl stop brltty.service
-sudo systemctl disable brltty.service
+```
+PERFORM ──hold──▶ META ──hold──▶ VOICE ──hold──▶ PERFORM (saves on the way out)
+ (play)      (Grids meta-params)  (drum tuning)
 ```
 
-Then build and flash like:
-```bash
-make
+The clock, sequencer and audio **keep running in every page**, so edits preview
+live on the playing pattern.
 
-avrdude -C /etc/avrdude.conf -v \
-        -p atmega328p \
-        -c arduino \
-        -P /dev/ttyUSB0 \
-        -b 57600 -D \
+### PERFORM (normal play) — stock Grids performance UI
+
+| Control | Function |
+|---------|----------|
+| **BD / SD / HH density** | Per-instrument hit density (fill) |
+| **X** | Map position X (pattern morph) |
+| **Y** | Map position Y (pattern morph) |
+| **Randomness** | Pattern chaos **+ per-hit humanisation** (see below) |
+| **Tempo** | Internal BPM. Fully left = external/MIDI clock mode |
+| **TAP (short)** | Tap tempo / reset; mute-unmute in MIDI-clock mode |
+| **Clock / Reset in** | External clock & reset (voltage-trigger jumper mode) |
+
+### VOICE (drum tuning) — the six knobs edit **one voice at a time**
+
+Enter with two long-holds. A **short TAP cycles the target voice** BD → SD → HH;
+the selected voice's channel LED **blinks** (with the CLOCK LED lit) to show which
+one you're editing. Knobs use *catch* behaviour — a knob only takes over once you
+move it. Changes are **saved to EEPROM** when you long-hold back to PERFORM.
+
+| Knob | Parameter | Kick (BD) | Snare (SD) | Hat (HH) |
+|------|-----------|-----------|------------|----------|
+| **BD density** | Pitch (~20 Hz–2 kHz) | body pitch | body pitch | metal-tone pitch |
+| **SD density** | Body/amp length (~16–320 ms) | decay | body decay | — |
+| **HH density** | Pitch-env depth | "punch" (sweep) | — | — |
+| **X** | Tonal level | — | body vs noise | **noise↔metal blend** |
+| **Y** | Noise level | — | snare noise | overall hat level |
+| **Randomness** | Noise length (~16–320 ms) | — | noise tail | hat decay |
+| **Tempo** | Pitch-env time | kick sweep time | — | — |
+
+Notes: the kick is a pitch-swept sine (no noise); the snare is a sine body + a
+high-passed-noise layer; the hat is high-passed noise blended with a cheap
+two-oscillator **metallic tone** (turn **X** up on the hat to bring in the 808-ish
+clang, set its pitch with **BD density**). A "—" means that param doesn't apply to
+that voice.
+
+### META (Grids meta-parameters)
+
+Enter with one long-hold. Move a knob to set its parameter (LEDs indicate state):
+
+| Knob | Meta-parameter |
+|------|----------------|
+| **BD density** | Clock resolution |
+| **SD density** | Tap-tempo on/off |
+| **HH density** | Swing on/off |
+| **X** | Output mode (drums / accent-clock-reset) |
+| **Y** | Gate mode |
+| **Randomness** | Clock output on/off |
+
+## Per-hit humanisation (Randomness knob)
+
+In PERFORM mode the Randomness knob does double duty: besides pattern chaos it
+injects **per-hit variation** into the voices, scaled by the knob (fully left =
+identical hits):
+
+- **Pitch:** ±2% max, and only across the **top ~80%** of the knob's travel (the
+  bottom fifth leaves pitch locked).
+- **Level (velocity)** and **decay length:** up to **±20%**.
+
+## MIDI
+
+MIDI I/O is on the TRS jacks (D0/D1, 31250 baud). Drum channel is **10**.
+
+- **Clock sync:** responds to MIDI Start / Stop / Continue / Clock (turn Tempo
+  fully left to enter external/MIDI clock mode; TAP mutes/unmutes).
+- **Note-in triggers voices** (independent of the sequencer): note **36** = kick,
+  **38** = snare, **42** = closed hat, **46** = open hat (plus GM neighbours).
+  Velocity ≥ 96 fires the accent layer.
+- **Note-out:** the sequencer also sends GM drum notes (36/38/42/46) on ch 10.
+- **CC live voice tuning** (any time, independent of edit page):
+
+  | CC | Parameter | CC | Parameter |
+  |----|-----------|----|-----------|
+  | 20 | Kick pitch | 24 | Snare noise mix |
+  | 21 | Kick decay | 25 | Snare noise decay |
+  | 22 | Snare tone (body pitch) | 26 | Hat decay (open/closed) |
+  | 23 | Snare body decay | 27 | Hat level |
+
+## Build & flash
+
+AVR C++ for ATmega328P at **16 MHz** (the board's actual crystal — already set in
+the `makefile`). From this directory:
+
+```bash
+rm -rf build && make            # -> build/grids/grids.hex   (make clean leaves stale objects)
+```
+
+Flash with a **USBasp** ISP programmer (the Nano serial bootloader does not work
+on this board — `-c arduino`/ttyUSB0 always fails):
+
+```bash
+avrdude -C /etc/avrdude.conf -p atmega328p -c usbasp \
         -U flash:w:build/grids/grids.hex:i
 ```
 
-Or, if you are using a USBasp programmer:
-```bash
-make
+Flashing can fail with the Nano seated in the module — pull it out to flash if
+needed. On Ubuntu, `brltty` may grab a CH34x USB device; stop/mask it first.
 
-avrdude -C /etc/avrdude.conf -v \
-        -p atmega328p \
-        -c usbasp \
-        -u \
-        -U flash:w:build/grids/grids.hex:i
-```
+### Diagnostics
 
+`grids.cc` has a `//#define DRUMSYNTH_TEST_TONE` near the top: uncomment it to
+force a continuous 220 Hz tone on all three jacks, bypassing the sequencer — handy
+for verifying the audio ISR / PDM / output path in isolation. Leave it commented
+for normal use.
 
-### Gritty Grids User Manual
-Enter the external clocking mode by turning the tempo knob to 
-its minimum position, thus enabling Grids to be clocked by either external clock pulses or by MIDI messages. After receiving a  MIDI Start or MIDI Continue 
-message Grids switches into a "clocked_by_midi" mode. In this mode its 
-drum engine advances with every MIDI clock message. External clocking 
-via the clock input jack is disabled.
+## Credits & license
 
-Receiving a MIDI Start message resets the Grids drum engine whereas 
-MIDI continue resumes from the current state it was left in.
+- Original **Grids** design and code: **Émilie Gillet**, Mutable Instruments —
+  released open source, with thanks.
+- **Gritty-Grids** MIDI improvements: **Sonic Insurgence**.
+- triggerspace remap & **Gritty-drumsynth**: **Andrew Perry**.
 
-The 
-functionality of the reset input as well as the TAP/reset button was changed, because a manually tapped-in tempo or an external reset applied while in "clocked_by_midi" mode
-would break the synchronization with the MIDI master. Instead they now provide a "mute" function that suppresses all trigger and 
-accent outputs. While muted all three output leds will light up 
-permanently.
-
-When entering the external clocking mode (turning the tempo knob fully left) the outputs are muted by default. Press the button to unmute them.
-
-To leave the "clocked_by_midi" mode, turn the tempo knob to the right. This activates internal clocking and unmutes all outputs.
-
-
-### Other Changes
-Besides the MIDI stuff I also disabled retriggering of the outputs 
-when a signal at the reset input has been received. This avoids 
-the annoying double triggers.
-
-Finally I increased the duration of the trigger pulses from 1 ms to 
-5 ms because some Eurorack modules are reported to have troubles recognizing the short trigger pulses generated by Grids original firmware.
-
-
-### Syncing other modules to your MIDI master
-If you have a sequencer module in your rack you might want to set Grids output configuration to ACC / CLK / RST (see Grids manual on how to do this). This leaves you with a 
-clock and reset output that are in sync with your MIDI master clock. Use these outputs to synchronize your sequencer modules.
-
-
-### Website
-Original Grids website: https://mutable-instruments.net/modules/grids/
-
-
-### Author
-* Author of the original Grids project is Émilie Gillet.
-* Author of the Gritty Grids modification is Sonic Insurgence.
-
-
-### License
-This program is free software: you can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published by 
-the Free Software Foundation, either version 3 of the License, or 
-(at your option) any later version.
-
-
-### Acknowledgments
-Original Grids design by Émilie Gillet from Mutable Instruments. 
-Many thanks for making it open source!
-
+GPLv3 — this program is free software; redistribute/modify under the GNU General
+Public License v3 or (at your option) any later version.
