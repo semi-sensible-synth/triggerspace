@@ -103,7 +103,10 @@ Config `#define`s (also in `grids.cc` / `hardware_config.h`):
 
 Voice allocation prefers a free voice, else steals round-robin. A released note
 silences its voice (its pulse width drops to zero — no audio) rather than gating
-an envelope (there is no VCA/envelope yet). Common CCs:
+an envelope (there is no VCA/envelope yet). The **firing channel's LED blinks**
+on each note (`OSC_LED_FLASH_LOOPS` sets the length), so the round-robin
+allocation reads as the BD/SD/HH LEDs cycling. The clock-jack mix is unchanged.
+Common CCs:
 
 | CC | Function |
 |----|----------|

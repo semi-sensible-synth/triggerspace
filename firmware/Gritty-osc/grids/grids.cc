@@ -77,6 +77,12 @@
 #ifndef OSC_SPLIT_NOTE
 #define OSC_SPLIT_NOTE 48
 #endif
+// Per-note LED flash length, in main-loop iterations (approximate — the loop
+// rate varies a little by mode). The firing channel's LED blinks this long on
+// each note-on; in the round-robin modes you see the LEDs cycle BD/SD/HH.
+#ifndef OSC_LED_FLASH_LOOPS
+#define OSC_LED_FLASH_LOOPS 500
+#endif
 
 #if defined(OSC_MIDI_MONO_ROOT) || defined(OSC_MIDI_MULTI_3CH) || \
     defined(OSC_MIDI_POLY3) || defined(OSC_MIDI_POLY6) || defined(OSC_MIDI_SPLIT)
@@ -314,6 +320,14 @@ static uint8_t midi_rr = 0;             // round-robin allocation pointer
 static uint8_t midi_mod = 0;            // mod wheel (CC1) -> global PWM
 static uint8_t midi_detune = 0;         // CC94 -> detune depth (0..127 -> 0..255)
 
+// Per-note LED feedback: each note-on reloads the firing channel's flash timer,
+// which UpdateMidiLeds() counts down (one per main-loop pass) while lighting
+// that channel's LED. Channel index (0/1/2) -> LED bit via kChannelLed. Only the
+// three channel LEDs are used; the clock-jack mix (ISR bit 0x40) is unaffected.
+static const uint8_t kChannelLed[3] = { LED_BD, LED_SD, LED_HH };
+static uint16_t led_flash[3] = {0, 0, 0};
+static inline void FlashChannel(uint8_t ch) { led_flash[ch] = OSC_LED_FLASH_LOOPS; }
+
 #if defined(OSC_MIDI_MONO_ROOT)
 static int8_t  held_notes[8];           // last-note-priority stack (mode A)
 static uint8_t held_count = 0;
@@ -412,24 +426,26 @@ static void PollMidi()
     if (ch >= OSC_MIDI_CHANNEL && ch < OSC_MIDI_CHANNEL + 3)
     {
       uint8_t v = (uint8_t)(ch - OSC_MIDI_CHANNEL);
-      if (note_on)                    { midi_note[v] = data0; midi_gate[v] = true; }
+      if (note_on)                    { midi_note[v] = data0; midi_gate[v] = true; FlashChannel(v); }
       else if (midi_note[v] == data0) { midi_gate[v] = false; }
     }
 #else
     if (ch != OSC_MIDI_CHANNEL) continue;
 # if defined(OSC_MIDI_MONO_ROOT)
-    if (note_on) HeldPush(data0); else HeldRemove(data0);
+    // One key plays the whole chord -> blink all three channels together.
+    if (note_on) { HeldPush(data0); FlashChannel(0); FlashChannel(1); FlashChannel(2); }
+    else HeldRemove(data0);
 # elif defined(OSC_MIDI_POLY3)
-    if (note_on) { uint8_t v = AllocVoice(0, 2); midi_note[v] = data0; midi_gate[v] = true; }
+    if (note_on) { uint8_t v = AllocVoice(0, 2); midi_note[v] = data0; midi_gate[v] = true; FlashChannel(v); }
     else ReleaseNote(data0, 0, 2);
 # elif defined(OSC_MIDI_POLY6)
-    if (note_on) { uint8_t v = AllocVoice(0, 5); midi_note[v] = data0; midi_gate[v] = true; }
+    if (note_on) { uint8_t v = AllocVoice(0, 5); midi_note[v] = data0; midi_gate[v] = true; FlashChannel(v % 3); }
     else ReleaseNote(data0, 0, 5);
 # elif defined(OSC_MIDI_SPLIT)
     if (note_on)
     {
       uint8_t v = (data0 >= OSC_SPLIT_NOTE) ? AllocVoice(0, 2) : AllocVoice(3, 5);
-      midi_note[v] = data0; midi_gate[v] = true;
+      midi_note[v] = data0; midi_gate[v] = true; FlashChannel(v % 3);
     }
     else
     {
@@ -511,6 +527,18 @@ static void RenderMidi()
   }
 #endif
 }
+
+// Light each channel LED while its per-note flash timer is still running, one
+// decrement per main-loop pass. Round-robin note allocation makes the LEDs cycle.
+static void UpdateMidiLeds()
+{
+  uint8_t pattern = 0;
+  for (uint8_t c = 0; c < 3; ++c)
+  {
+    if (led_flash[c]) { --led_flash[c]; pattern |= kChannelLed[c]; }
+  }
+  leds.Write(pattern);
+}
 #endif  // OSC_MIDI
 
 void Init()
@@ -559,6 +587,7 @@ int main(void)
     adc.Scan();     // keep the scanner fresh (mode A still reads the knobs)
     PollMidi();
     RenderMidi();
+    UpdateMidiLeds();
   }
 #else
   // All of these pots are wired reversed (stock Grids reads them with ~), so
