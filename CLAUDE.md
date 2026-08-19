@@ -18,8 +18,8 @@ These two are tightly coupled: the PCB remaps Nano pins so custom firmware is *m
 
 ## Hardware (KiCad)
 
-KiCad 7 project. Do not hand-edit the s-expression files (`triggerspace.kicad_sch`,
-`triggerspace.kicad_pcb`, `triggerspace.kicad_pro`) — open them in KiCad. `-bak` files, `*.kicad_prl`,
+KiCad 8 project. Do not hand-edit the s-expression files (`triggerspace.kicad_sch`,
+`triggerspace.kicad_pcb`, `triggerspace.kicad_pro`) — use the KiCad Python API and kicad-skip to edit them. `-bak` files, `*.kicad_prl`,
 and `triggerspace-backups/` are KiCad autosaves/backups and are gitignored.
 
 Key files:
