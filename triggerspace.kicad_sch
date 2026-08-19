@@ -7,7 +7,7 @@
 	(title_block
 		(title "triggerspace (\"NanoGris-MIDI\")")
 		(date "2020-03-28")
-		(rev "0.042")
+		(rev "0.5.0")
 		(company "Andrew Perry (semi-sensible synth)")
 	)
 	(lib_symbols
@@ -28934,7 +28934,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "141475cc-c318-445d-8137-f1d37cdaae49")
-		(property "Reference" "CH1_ACC_CAP"
+		(property "Reference" "CH1_ACC_CAP1"
 			(at 353.822 96.7232 0)
 			(effects
 				(font
@@ -28988,7 +28988,7 @@
 		(instances
 			(project "triggerspace"
 				(path "/a5cd8da1-8f7f-4f80-bb23-0317de562222"
-					(reference "CH1_ACC_CAP")
+					(reference "CH1_ACC_CAP1")
 					(unit 1)
 				)
 			)
@@ -29406,7 +29406,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "46dd470e-47f3-4b64-b9a3-11b03d6b63ef")
-		(property "Reference" "CH1_CAP"
+		(property "Reference" "CH1_CAP1"
 			(at 353.822 66.2432 0)
 			(effects
 				(font
@@ -29460,7 +29460,7 @@
 		(instances
 			(project "triggerspace"
 				(path "/a5cd8da1-8f7f-4f80-bb23-0317de562222"
-					(reference "CH1_CAP")
+					(reference "CH1_CAP1")
 					(unit 1)
 				)
 			)
@@ -29696,7 +29696,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "9fce7aa9-4d7a-4e79-b5a7-25063a149f5e")
-		(property "Reference" "CH3_ACC_CAP"
+		(property "Reference" "CH3_ACC_CAP1"
 			(at 353.822 117.0432 0)
 			(effects
 				(font
@@ -29750,7 +29750,7 @@
 		(instances
 			(project "triggerspace"
 				(path "/a5cd8da1-8f7f-4f80-bb23-0317de562222"
-					(reference "CH3_ACC_CAP")
+					(reference "CH3_ACC_CAP1")
 					(unit 1)
 				)
 			)
@@ -29765,7 +29765,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ac48e021-b66f-4b91-8304-9f27360d9565")
-		(property "Reference" "CH2_CAP"
+		(property "Reference" "CH2_CAP1"
 			(at 353.822 76.4032 0)
 			(effects
 				(font
@@ -29819,7 +29819,7 @@
 		(instances
 			(project "triggerspace"
 				(path "/a5cd8da1-8f7f-4f80-bb23-0317de562222"
-					(reference "CH2_CAP")
+					(reference "CH2_CAP1")
 					(unit 1)
 				)
 			)
@@ -30546,7 +30546,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ddc47afa-fd13-4c04-8208-ad63e7e678ee")
-		(property "Reference" "CH2_ACC_CAP"
+		(property "Reference" "CH2_ACC_CAP1"
 			(at 353.822 106.8832 0)
 			(effects
 				(font
@@ -30600,7 +30600,7 @@
 		(instances
 			(project "triggerspace"
 				(path "/a5cd8da1-8f7f-4f80-bb23-0317de562222"
-					(reference "CH2_ACC_CAP")
+					(reference "CH2_ACC_CAP1")
 					(unit 1)
 				)
 			)
@@ -31086,7 +31086,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f4824830-a1e5-49d8-9e84-d2bd1d6cb49c")
-		(property "Reference" "CH3_CAP"
+		(property "Reference" "CH3_CAP1"
 			(at 353.822 86.5632 0)
 			(effects
 				(font
@@ -31140,7 +31140,7 @@
 		(instances
 			(project "triggerspace"
 				(path "/a5cd8da1-8f7f-4f80-bb23-0317de562222"
-					(reference "CH3_CAP")
+					(reference "CH3_CAP1")
 					(unit 1)
 				)
 			)

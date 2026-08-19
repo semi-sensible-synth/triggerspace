@@ -1,6 +1,9 @@
 # triggerspace
 
 > **TESTED** - v0.042 works with some simple bodges (build notes below)
+>
+> **IN PROGRESS** - v0.5.0 adds RC reconstruction-cap sockets on the jack PCB's six
+> audio outputs (for the synthesised drum voices); not yet bench-verified (see below)
 
 ![View on KiCanvas](https://img.shields.io/badge/View_on-KiCanvas-purple?color=%238864CB&link=https%3A%2F%2Fgithub.com%2Fsemi-sensible-synth%2Ftriggerspace)
 
@@ -48,6 +51,16 @@ Use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-se
 - Chord/arp output over MIDI. Set the chord root/inversion to be played via one of the CV inputs, or MIDI-IN
   - Read MIDI notes from MIDI-IN, buffer the last 3 or 6 notes seen and play these for Out1-3, Accent 1-3
 - (Crazier ideas: pair it with a SAM2695 or VS1053B based module/expander for GM MIDI audio out ! There seem to be NOS versions on AliExpress ....)
+
+## v0.5.0 changes (pending verification)
+
+- Added RC reconstruction-cap sockets (`CH1_CAP1`, `CH1_ACC_CAP1`, `CH2_CAP1`,
+  `CH2_ACC_CAP1`, `CH3_CAP1`, `CH3_ACC_CAP1`) on the jack PCB's six audio outputs,
+  to clean up the sigma-delta hiss from the Gritty-drumsynth firmware's synthesised
+  drum voices (see `plans/gritty-drumsynth.md` M8). Cap values/footprint TBD from
+  bench testing.
+- Not yet bench-verified or fabricated — treat as a work-in-progress revision until
+  confirmed.
 
 ## v0.042 build guide notes (bodges required !)
 

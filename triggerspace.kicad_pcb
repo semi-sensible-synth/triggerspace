@@ -200,7 +200,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://www.arduino.cc/en/uploads/Main/ArduinoNanoManual23.pdf"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -224,8 +224,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Arduino*Nano*")
 		(path "/00000000-0000-0000-0000-00005e2971e2")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.4 39.5)
@@ -870,7 +872,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -894,8 +896,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005e047b53")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.37 -1.37)
@@ -1090,7 +1094,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -1114,8 +1118,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005e2971ea")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 3.87 -1.37)
@@ -1310,7 +1316,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -1334,8 +1340,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005e9d32d9")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.37 -1.37)
@@ -1530,7 +1538,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -1554,8 +1562,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e2971f4")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -1790,7 +1800,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -1814,8 +1824,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e2971f3")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -2050,7 +2062,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -2074,8 +2086,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e047b6b")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -2310,7 +2324,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -2334,8 +2348,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e2971ee")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -2570,7 +2586,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -2594,8 +2610,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dfd08cf")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -2830,7 +2848,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -2854,8 +2872,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e2971ec")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -3090,7 +3110,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -3114,8 +3134,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e047b5c")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.68 0)
@@ -3350,7 +3372,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -3374,8 +3396,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e2971eb")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.94 0)
@@ -3610,7 +3634,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -3634,8 +3658,10 @@
 				)
 			)
 		)
-		(path "/00000000-0000-0000-0000-00005dd224da")
-		(sheetfile "NanoGris.kicad_sch")
+		(property ki_fp_filters "SOIC*3.9x4.9mm*P1.27mm* DIP*W7.62mm* TO*99* OnSemi*Micro8* TSSOP*3x3mm*P0.65mm* TSSOP*4.4x3mm*P0.65mm* MSOP*3x3mm*P0.65mm* SSOP*3.9x4.9mm*P0.635mm* LFCSP*2x2mm*P0.5mm* *SIP* SOIC*5.3x6.2mm*P1.27mm*")
+		(path "/00000000-0000-0000-0000-00005dd20870")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.16 -1.33)
@@ -3927,7 +3953,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -3951,8 +3977,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005dd088a8")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.37 1.37)
@@ -4147,7 +4175,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -4171,8 +4199,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005dd7b87b")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.37 -1.37)
@@ -4367,7 +4397,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -4391,8 +4421,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005dd7b8b7")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 3.87 -1.37)
@@ -4587,7 +4619,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -4611,8 +4643,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005dd7b8c8")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.37 1.37)
@@ -4807,7 +4841,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -4831,8 +4865,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dd7b858")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -5067,7 +5103,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -5091,8 +5127,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dd7b85e")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -5327,7 +5365,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -5351,8 +5389,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dd7b864")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -5587,7 +5627,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -5611,8 +5651,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dd7b894")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -5847,7 +5889,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -5871,8 +5913,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dd7b89a")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -6107,7 +6151,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -6131,8 +6175,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dd7b8a0")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -6367,7 +6413,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -6391,8 +6437,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dd7b871")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.68 0)
@@ -6627,7 +6675,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -6651,8 +6699,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dd7b8ad")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.94 0)
@@ -6887,7 +6937,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -6911,8 +6961,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "SOIC*3.9x4.9mm*P1.27mm* DIP*W7.62mm* TO*99* OnSemi*Micro8* TSSOP*3x3mm*P0.65mm* TSSOP*4.4x3mm*P0.65mm* MSOP*3x3mm*P0.65mm* SSOP*3.9x4.9mm*P0.635mm* LFCSP*2x2mm*P0.5mm* *SIP* SOIC*5.3x6.2mm*P1.27mm*")
 		(path "/00000000-0000-0000-0000-00005dd7b849")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.16 -1.33)
@@ -7204,7 +7256,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -7228,8 +7280,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005dda7c59")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.37 -1.37)
@@ -7424,7 +7478,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -7448,8 +7502,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005dda7c95")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 3.87 -1.37)
@@ -7644,7 +7700,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -7668,8 +7724,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005dda7ca6")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.37 1.37)
@@ -7864,7 +7922,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -7888,8 +7946,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dda7c36")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -8124,7 +8184,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -8148,8 +8208,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dda7c3c")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -8384,7 +8446,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -8408,8 +8470,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dda7c42")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -8644,7 +8708,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -8668,8 +8732,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dda7c72")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -8904,7 +8970,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -8928,8 +8994,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dda7c78")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -9164,7 +9232,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -9188,8 +9256,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dda7c7e")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -9424,7 +9494,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -9448,8 +9518,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dda7c4f")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.68 0)
@@ -9684,7 +9756,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -9708,8 +9780,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dda7c8b")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.94 0)
@@ -9944,7 +10018,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "http://ww1.microchip.com/downloads/en/DeviceDoc/21733j.pdf"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -9968,8 +10042,10 @@
 				)
 			)
 		)
-		(path "/00000000-0000-0000-0000-00005dda7c27")
-		(sheetfile "NanoGris.kicad_sch")
+		(property ki_fp_filters "SOIC*3.9x4.9mm*P1.27mm* DIP*W7.62mm* TO*99* OnSemi*Micro8* TSSOP*3x3mm*P0.65mm* TSSOP*4.4x3mm*P0.65mm* MSOP*3x3mm*P0.65mm* SSOP*3.9x4.9mm*P0.635mm* LFCSP*2x2mm*P0.5mm* *SIP* SOIC*5.3x6.2mm*P1.27mm*")
+		(path "/00000000-0000-0000-0000-00005dda7c21")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.16 -1.33)
@@ -10261,7 +10337,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -10273,7 +10349,7 @@
 				)
 			)
 		)
-		(property "Description" "Light emitting diode"
+		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -10285,8 +10361,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/00000000-0000-0000-0000-00005e9a987e")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -10488,7 +10566,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -10512,8 +10590,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/00000000-0000-0000-0000-00005e9a987f")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -10715,7 +10795,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -10739,8 +10819,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/00000000-0000-0000-0000-00005e9a9880")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -10942,7 +11024,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -10966,8 +11048,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/00000000-0000-0000-0000-00005dcf7258")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -11169,7 +11253,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -11193,8 +11277,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf731e")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -11541,7 +11627,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -11565,8 +11651,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005e9a988c")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -11913,7 +12001,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -11937,8 +12025,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005e9a98a0")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -12285,7 +12375,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -12309,8 +12399,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005e9a9896")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -12657,7 +12749,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -12681,8 +12773,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf72d8")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -13029,7 +13123,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -13053,8 +13147,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005e9a9887")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -13401,7 +13497,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -13425,8 +13521,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf7373")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -13773,7 +13871,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -13797,8 +13895,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf7381")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -14145,7 +14245,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -14169,8 +14269,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Potentiometer*")
 		(path "/00000000-0000-0000-0000-00005dcf7301")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 13.12 -7.521)
@@ -14453,7 +14555,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -14477,8 +14579,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Potentiometer*")
 		(path "/00000000-0000-0000-0000-00005dcf7324")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 13.12 -7.521)
@@ -14761,7 +14865,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -14785,8 +14889,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Potentiometer*")
 		(path "/00000000-0000-0000-0000-00005e9a988d")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 13.12 -7.521)
@@ -15069,7 +15175,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -15093,8 +15199,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Potentiometer*")
 		(path "/00000000-0000-0000-0000-00005dcf72de")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 13.12 -7.521)
@@ -15377,7 +15485,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -15401,8 +15509,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Potentiometer*")
 		(path "/00000000-0000-0000-0000-00005e9a9888")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 13.12 -7.521)
@@ -15685,7 +15795,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -15709,8 +15819,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Potentiometer*")
 		(path "/00000000-0000-0000-0000-00005dcf7275")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 13.12 -7.521)
@@ -15993,7 +16105,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -16017,8 +16129,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Potentiometer*")
 		(path "/00000000-0000-0000-0000-00005e9a98a1")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 13.12 -7.521)
@@ -16301,7 +16415,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -16325,8 +16439,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "CP_*")
 		(path "/00000000-0000-0000-0000-00005dc6df95")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.49 1.04)
@@ -17654,7 +17770,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -17678,8 +17794,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005dc772c7")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.37 -1.37)
@@ -17874,7 +17992,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -17898,8 +18016,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "CP_*")
 		(path "/00000000-0000-0000-0000-00005dc3a932")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.29 -2.58)
@@ -19227,7 +19347,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -19251,8 +19371,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "CP_*")
 		(path "/00000000-0000-0000-0000-00005dc3d618")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.29 -2.58)
@@ -20580,7 +20702,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -20604,8 +20726,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "CP_*")
 		(path "/00000000-0000-0000-0000-00005e378854")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.49 1.04)
@@ -21933,7 +22057,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -21957,8 +22081,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/00000000-0000-0000-0000-00005dc322cb")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.63 0)
@@ -22277,7 +22403,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -22301,8 +22427,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/00000000-0000-0000-0000-00005dc3d609")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.99 0)
@@ -22610,7 +22738,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -22634,8 +22762,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_2x??_*")
 		(path "/00000000-0000-0000-0000-00005dc2a3d5")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -4.68 -0.5)
@@ -23120,7 +23250,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -23144,8 +23274,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "TO?92*")
 		(path "/00000000-0000-0000-0000-00005e51c3e4")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.74 1.85)
@@ -23359,7 +23491,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -23383,8 +23515,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "TO?92*")
 		(path "/00000000-0000-0000-0000-00005e677c46")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.74 1.85)
@@ -23598,7 +23732,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -23622,8 +23756,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc370a9")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.68 0)
@@ -23858,7 +23994,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -23882,8 +24018,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc3d611")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.68 0)
@@ -24118,7 +24256,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -24142,8 +24280,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e3a8ce6")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -24378,7 +24518,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -24402,8 +24542,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc1d53a")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -24638,7 +24780,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -24662,8 +24804,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc201d4")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -24898,7 +25042,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -24922,8 +25066,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc204fc")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -25158,7 +25304,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -25182,8 +25328,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc209d9")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -25418,7 +25566,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -25442,8 +25590,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc210bd")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -25678,7 +25828,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -25702,8 +25852,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc2184d")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -25938,7 +26090,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -25962,8 +26114,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc5a95d")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -26198,7 +26352,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -26222,8 +26376,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005dc5a972")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -26457,7 +26613,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -26481,8 +26637,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e478d97")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -26717,7 +26875,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -26741,8 +26899,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e48f1ef")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -26976,7 +27136,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -27000,8 +27160,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e54ccc8")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -27236,7 +27398,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -27260,8 +27422,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e677c32")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -27495,7 +27659,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -27519,8 +27683,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e677c38")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -27755,7 +27921,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -27779,8 +27945,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e677c55")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.68 0)
@@ -28015,7 +28183,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "http://www.st.com/content/ccc/resource/technical/document/datasheet/41/4f/b3/b0/12/d4/47/88/CD00000444.pdf/files/CD00000444.pdf/jcr:content/translations/en.CD00000444.pdf"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -28039,8 +28207,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "TO?252* TO?263* TO?220*")
 		(path "/00000000-0000-0000-0000-00005dc68431")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.66 -3.27)
@@ -28308,7 +28478,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm4040-n.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -28332,8 +28502,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "TO?92*Inline*")
 		(path "/00000000-0000-0000-0000-00005e34b196")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.74 1.85)
@@ -28544,7 +28716,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -28568,8 +28740,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "DIP*W7.62mm* SOIC*3.9x9.9mm*P1.27mm* TSSOP*4.4x5mm*P0.65mm* SOIC*5.3x10.2mm*P1.27mm* SOIC*7.5x10.3mm*P1.27mm*")
 		(path "/00000000-0000-0000-0000-00005dc1c0e5")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.46 -1.33)
@@ -28951,7 +29125,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -28975,8 +29149,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/00000000-0000-0000-0000-00005e3cdd9f")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 3.87 -1.37)
@@ -29170,7 +29346,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -29194,8 +29370,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e4f93f8")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -29430,7 +29608,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -29454,8 +29632,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e4f940a")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -29690,7 +29870,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -29714,8 +29894,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e4f9404")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -29950,7 +30132,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -29974,8 +30156,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/00000000-0000-0000-0000-00005e4f93fe")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -30210,7 +30394,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -30234,8 +30418,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf71c9")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -30582,7 +30768,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -30606,8 +30792,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf71d6")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -30954,7 +31142,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -30978,8 +31166,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf722b")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -31326,7 +31516,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -31350,8 +31540,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf721e")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -31698,7 +31890,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -31722,8 +31914,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf7211")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -32070,7 +32264,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -32094,8 +32288,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/00000000-0000-0000-0000-00005dcf7204")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.5 12.48)
@@ -32443,7 +32639,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -32467,9 +32663,11 @@
 				)
 			)
 		)
+		(property ki_fp_filters "MountingHole*")
 		(path "/00000000-0000-0000-0000-00005f1dd187")
-		(sheetfile "NanoGris.kicad_sch")
-		(attr exclude_from_pos_files exclude_from_bom)
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
+		(attr exclude_from_pos_files)
 		(fp_circle
 			(center 0 0)
 			(end 3.2 0)
@@ -32542,7 +32740,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -32566,8 +32764,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "MountingHole*")
 		(path "/00000000-0000-0000-0000-00005f1f1794")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr exclude_from_pos_files)
 		(fp_circle
 			(center 0 0)
@@ -32640,7 +32840,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -32665,7 +32865,8 @@
 			)
 		)
 		(path "/00000000-0000-0000-0000-00005f6fa71d")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.25 1.5)
@@ -32987,7 +33188,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -33011,9 +33212,11 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Fiducial*")
 		(path "/00000000-0000-0000-0000-00005dfc105a")
-		(sheetfile "NanoGris.kicad_sch")
-		(attr board_only exclude_from_pos_files exclude_from_bom)
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
+		(attr board_only exclude_from_pos_files)
 		(fp_poly
 			(pts
 				(xy 2.6526 1.958752) (xy 2.669948 1.966334) (xy 2.711356 1.999128) (xy 2.746765 2.046547) (xy 2.768664 2.097151)
@@ -33718,7 +33921,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -33730,7 +33933,7 @@
 				)
 			)
 		)
-		(property "Description" "Audio Jack, 3 Poles (Stereo / TRS)"
+		(property "Description" ""
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -33742,8 +33945,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/442086aa-3ad1-4608-8d50-a245dbc7b206")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.8 12.48)
@@ -34072,7 +34277,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -34084,7 +34289,7 @@
 				)
 			)
 		)
-		(property "Description" "Solder Jumper, 2-pole, closed/bridged"
+		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -34096,9 +34301,11 @@
 				)
 			)
 		)
+		(property ki_fp_filters "SolderJumper*Bridged*")
 		(path "/b97afbb6-5d95-4d20-8b92-785e3a960bd9")
-		(sheetfile "NanoGris.kicad_sch")
-		(attr exclude_from_pos_files exclude_from_bom)
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
+		(attr exclude_from_pos_files)
 		(net_tie_pad_groups "1, 2")
 		(fp_poly
 			(pts
@@ -36721,7 +36928,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -36733,7 +36940,7 @@
 				)
 			)
 		)
-		(property "Description" "Solder Jumper, 2-pole, closed/bridged"
+		(property "Description" ""
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -36745,9 +36952,11 @@
 				)
 			)
 		)
+		(property ki_fp_filters "SolderJumper*Bridged*")
 		(path "/be20b6ad-f1b5-4098-8240-c4fe3a7c5926")
-		(sheetfile "NanoGris.kicad_sch")
-		(attr exclude_from_pos_files exclude_from_bom)
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
+		(attr exclude_from_pos_files)
 		(net_tie_pad_groups "1, 2")
 		(fp_poly
 			(pts
@@ -36988,7 +37197,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -37012,8 +37221,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/3d240089-fb02-48d6-b3d2-4131b0d0ce08")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.89 0.92)
@@ -37345,7 +37556,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -37357,7 +37568,7 @@
 				)
 			)
 		)
-		(property "Description" "Audio Jack, 3 Poles (Stereo / TRS)"
+		(property "Description" ""
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -37369,8 +37580,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Jack*")
 		(path "/6c931d79-b8ee-464c-885b-7e957680b193")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.8 12.48)
@@ -37895,7 +38108,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -37907,7 +38120,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x12, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -37919,8 +38132,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/00000000-0000-0000-0000-00005dfe3a6d")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0 1.33)
@@ -38260,7 +38475,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -38284,8 +38499,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/00000000-0000-0000-0000-00005e046254")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.33 -29.27)
@@ -38625,7 +38842,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -38637,7 +38854,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x10, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -38649,8 +38866,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/00000000-0000-0000-0000-00005e67fc26")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.33 1.33)
@@ -38968,7 +39187,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -38980,7 +39199,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x10, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -38992,8 +39211,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/00000000-0000-0000-0000-00005e8b656a")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.33 -1.27)
@@ -39311,7 +39532,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -39335,8 +39556,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/00000000-0000-0000-0000-00005ede1ed6")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.33 1.33)
@@ -39654,7 +39877,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -39678,8 +39901,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/00000000-0000-0000-0000-00005ee8b478")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.33 -1.27)
@@ -39999,7 +40224,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -40023,9 +40248,11 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Fiducial*")
 		(path "/00000000-0000-0000-0000-00005dfe5632")
-		(sheetfile "NanoGris.kicad_sch")
-		(attr board_only exclude_from_pos_files exclude_from_bom)
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
+		(attr board_only exclude_from_pos_files)
 		(fp_poly
 			(pts
 				(xy 5.33569 -3.940018) (xy 5.370585 -3.955269) (xy 5.453877 -4.021235) (xy 5.525103 -4.116618) (xy 5.569153 -4.218406)
@@ -40458,7 +40685,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "http://www.onsemi.com/pub/Collateral/HCPL2731-D.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -40470,7 +40697,7 @@
 				)
 			)
 		)
-		(property "Description" "Low Input Current high Gain Split Darlington Optocouplers, -0.5V to 7V VDD, DIP-8"
+		(property "Description" ""
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -40482,8 +40709,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "DIP*W7.62mm* SMDIP*W9.53mm*")
 		(path "/c45fac9d-b581-4785-b6d2-ceac0d1ffd2c")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 9.06 -9.01)
@@ -40860,7 +41089,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -40884,8 +41113,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/e61756c5-0e73-4344-ac15-cf7a2b909020")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.73 -0.92)
@@ -41098,7 +41329,7 @@
 		(at 233.813 103.583 90)
 		(descr "Through hole straight socket strip, 1x02, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x02 2.54mm single row")
-		(property "Reference" "CH2_CAP"
+		(property "Reference" "CH2_CAP1"
 			(at 2.743 -1.369 0)
 			(layer "B.SilkS")
 			(uuid "e817688d-ad86-426b-82d3-fb23bc9cab83")
@@ -41123,7 +41354,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -41149,7 +41380,10 @@
 				(justify mirror)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/ac48e021-b66f-4b91-8304-9f27360d9565")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.75 -4.3)
@@ -41320,6 +41554,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 51 "CH2")
+			(pinfunction "Pin_1")
+			(pintype "passive")
 			(uuid "f8c2216e-6a52-4759-aa15-6247ecd4d831")
 		)
 		(pad "2" thru_hole circle
@@ -41329,6 +41565,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 3 "GND")
+			(pinfunction "Pin_2")
+			(pintype "passive")
 			(uuid "34386231-1bfd-414a-a368-69985b0663b6")
 		)
 		(embedded_fonts no)
@@ -41375,7 +41613,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -41387,7 +41625,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -41399,8 +41637,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/767675ce-1312-4839-afdd-dc580a7fc364")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.33 -6.41)
@@ -41641,7 +41881,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -41653,7 +41893,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -41665,8 +41905,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/54a7dce2-41b1-446a-bf01-d8bf940c96ed")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.33 1.33)
@@ -41918,7 +42160,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -41930,7 +42172,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -41942,8 +42184,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/d4313120-5519-4af0-ab10-37cbf3f0fa3a")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.33 -6.41)
@@ -42159,7 +42403,7 @@
 		(at 217.712 115.099 90)
 		(descr "Through hole straight socket strip, 1x02, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x02 2.54mm single row")
-		(property "Reference" "CH1_CAP"
+		(property "Reference" "CH1_CAP1"
 			(at 2.572 -1.07 180)
 			(layer "B.SilkS")
 			(uuid "5a8b66e0-32af-4119-ab8d-53dc8770c0ec")
@@ -42184,7 +42428,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -42210,7 +42454,10 @@
 				(justify mirror)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/46dd470e-47f3-4b64-b9a3-11b03d6b63ef")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.75 -4.3)
@@ -42381,6 +42628,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 49 "CH1")
+			(pinfunction "Pin_1")
+			(pintype "passive")
 			(uuid "033183c0-7465-4e70-80c1-326789d5e106")
 		)
 		(pad "2" thru_hole circle
@@ -42390,6 +42639,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 3 "GND")
+			(pinfunction "Pin_2")
+			(pintype "passive")
 			(uuid "d0abf93e-1b15-4179-aea1-8d5c1c25ded3")
 		)
 		(embedded_fonts no)
@@ -42411,7 +42662,7 @@
 		(at 250.46 114.809 90)
 		(descr "Through hole straight socket strip, 1x02, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x02 2.54mm single row")
-		(property "Reference" "CH2_ACC_CAP"
+		(property "Reference" "CH2_ACC_CAP1"
 			(at 2.482 -1.328 180)
 			(layer "B.SilkS")
 			(uuid "8856b18e-f3ed-4f08-9a98-8650e3c97a6f")
@@ -42436,7 +42687,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -42462,7 +42713,10 @@
 				(justify mirror)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/ddc47afa-fd13-4c04-8208-ad63e7e678ee")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.75 -4.3)
@@ -42633,6 +42887,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 57 "CH2_ACC")
+			(pinfunction "Pin_1")
+			(pintype "passive")
 			(uuid "6dedcb94-1db5-4af4-8810-ed35f2eba336")
 		)
 		(pad "2" thru_hole circle
@@ -42642,6 +42898,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 3 "GND")
+			(pinfunction "Pin_2")
+			(pintype "passive")
 			(uuid "f9131767-fde0-4c9e-a4eb-5a0885cf073b")
 		)
 		(embedded_fonts no)
@@ -42688,7 +42946,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -42712,8 +42970,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/e33e6268-cec5-4853-88bb-d693c9caeab0")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.63 0)
@@ -43012,7 +43272,7 @@
 		(at 250.46 103.354 90)
 		(descr "Through hole straight socket strip, 1x02, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x02 2.54mm single row")
-		(property "Reference" "CH3_CAP"
+		(property "Reference" "CH3_CAP1"
 			(at 2.514 -1.271 180)
 			(layer "B.SilkS")
 			(uuid "a02bd71c-196a-479b-895f-e066d70262d9")
@@ -43037,7 +43297,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -43063,7 +43323,10 @@
 				(justify mirror)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/f4824830-a1e5-49d8-9e84-d2bd1d6cb49c")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.75 -4.3)
@@ -43234,6 +43497,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 53 "CH3")
+			(pinfunction "Pin_1")
+			(pintype "passive")
 			(uuid "6fd359d6-994c-4a72-9956-212acc200e91")
 		)
 		(pad "2" thru_hole circle
@@ -43243,6 +43508,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 3 "GND")
+			(pinfunction "Pin_2")
+			(pintype "passive")
 			(uuid "5ba1539f-f91c-4082-8454-4f9e94081cfc")
 		)
 		(embedded_fonts no)
@@ -43289,7 +43556,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -43313,8 +43580,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/e25fc49b-a4aa-4ec9-948e-1edf4429758c")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.68 0)
@@ -43552,7 +43821,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -43576,8 +43845,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/f4357a60-9f7f-46cd-9a3a-22da6d182585")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.68 0)
@@ -43790,7 +44061,7 @@
 		(at 204.019 103.407 -90)
 		(descr "Through hole straight socket strip, 1x02, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x02 2.54mm single row")
-		(property "Reference" "CH1_ACC_CAP"
+		(property "Reference" "CH1_ACC_CAP1"
 			(at -2.653 -2.05 180)
 			(layer "B.SilkS")
 			(uuid "9ac41c07-78ad-4c63-8c49-cd8ea39b3407")
@@ -43815,7 +44086,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -43841,7 +44112,10 @@
 				(justify mirror)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/141475cc-c318-445d-8137-f1d37cdaae49")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.8 1.8)
@@ -44012,6 +44286,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 55 "CH1_ACC")
+			(pinfunction "Pin_1")
+			(pintype "passive")
 			(uuid "d33df9b5-325c-4c7f-a455-d1a433df645d")
 		)
 		(pad "2" thru_hole circle
@@ -44021,6 +44297,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 3 "GND")
+			(pinfunction "Pin_2")
+			(pintype "passive")
 			(uuid "05c32ff0-df14-4246-929f-5e05b112a018")
 		)
 		(embedded_fonts no)
@@ -44067,7 +44345,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -44079,7 +44357,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
@@ -44091,8 +44369,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/cd09eb0b-1821-4de1-a2af-7eac2dec64cc")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.33 1.33)
@@ -44308,8 +44588,8 @@
 		(at 256.732 114.723 -90)
 		(descr "Through hole straight socket strip, 1x02, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x02 2.54mm single row")
-		(property "Reference" "CH3_ACC"
-			(at -2.424 -1.801 180)
+		(property "Reference" "CH3_ACC_CAP1"
+			(at -2.433 -3.388 180)
 			(layer "B.SilkS")
 			(uuid "acc35e7e-cdef-4d6b-ba30-91a2f212ba45")
 			(effects
@@ -44333,7 +44613,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -44359,7 +44639,10 @@
 				(justify mirror)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/9fce7aa9-4d7a-4e79-b5a7-25063a149f5e")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.8 1.8)
@@ -44530,6 +44813,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 59 "CH3_ACC")
+			(pinfunction "Pin_1")
+			(pintype "passive")
 			(uuid "fae3e25e-8e3c-4e1c-88d3-d51ef6983acb")
 		)
 		(pad "2" thru_hole circle
@@ -44539,6 +44824,8 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 3 "GND")
+			(pinfunction "Pin_2")
+			(pintype "passive")
 			(uuid "5c91268a-038d-4393-8198-7a1b31f319ae")
 		)
 		(embedded_fonts no)
@@ -44585,7 +44872,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -44609,8 +44896,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "C_*")
 		(path "/ef749c0a-75a5-45b2-ac42-e355f6f4fee3")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 3.87 1.37)
@@ -44808,7 +45097,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -44820,7 +45109,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -44832,8 +45121,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/b4733629-63c4-4996-89f6-a139c00f9466")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.33 1.33)
@@ -45317,7 +45608,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -45341,8 +45632,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "R_*")
 		(path "/c131f504-25e1-4b97-81a6-94499c6d128f")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.94 0)
@@ -45580,7 +45873,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -45592,7 +45885,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -45604,8 +45897,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/c5b80c15-e1d1-44f6-afe3-ccdfc58d8711")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.33 -8.95)
@@ -45857,7 +46152,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -45869,7 +46164,7 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+		(property "Description" ""
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
@@ -45881,8 +46176,10 @@
 				)
 			)
 		)
+		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/06b1a658-df2e-4c89-ad97-5f364badf960")
-		(sheetfile "NanoGris.kicad_sch")
+		(sheetname "/")
+		(sheetfile "triggerspace.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.33 1.33)
@@ -47315,7 +47612,7 @@
 			)
 		)
 	)
-	(gr_text "NanoGris-MIDI V0.042"
+	(gr_text "NanoGris-MIDI V0.5.0"
 		(locked yes)
 		(at 104.322253 120.9548 90)
 		(layer "F.SilkS")
@@ -48023,7 +48320,7 @@
 			(justify left mirror)
 		)
 	)
-	(gr_text "NanoGris-MIDI V0.042"
+	(gr_text "NanoGris-MIDI V0.5.0"
 		(locked yes)
 		(at 258.4196 20.3962 0)
 		(layer "B.SilkS")
