@@ -77,8 +77,12 @@ schematic must be mirrored there, and vice versa.** MIDI OUT sends General MIDI 
 
 ## Known hardware issues / roadmap
 
-See the "build guide notes" and "Beyond v0.042" sections of `README.md` for bodges required on the
-current revision (notably: Nano VIN must be fed from +12V, not the 5V rail) and planned next-revision
-fixes. Consult these before altering the power section or panel layout.
+See the "v0.042 build guide notes" section of `README.md` for bodges required on built v0.042 boards
+(notably: Nano VIN must be fed from +12V, not the 5V rail - fixed in v0.5.0), `CHANGELOG.md` for what
+changed in each revision, and the "TODO / IDEAS" section of `README.md` for planned work. Consult
+these before altering the power section or panel layout.
+
+`CHANGELOG.md` follows Keep a Changelog. There is no Unreleased section: add new changes to the
+in-progress v0.5.0 entry until that revision is fabricated and bench-verified.
 
 `hardware_debugging/` (gitignored) holds logic-analyzer captures and photos from MIDI bring-up.
