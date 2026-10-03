@@ -1,10 +1,10 @@
 Ref,Val,Package,PosX,PosY,Rot,Side
 "J1","Conn_01x2","PinSocket_1x02_P2.54mm_Vertical",125.171200,-39.370000,180.000000,bottom
 "J2","Conn_01x2","PinSocket_1x02_P2.54mm_Vertical",150.647400,-39.420800,180.000000,bottom
-"J4","Conn_01x2","PinSocket_1x02_P2.54mm_Vertical",107.774304,-26.702626,0.000000,bottom
 "J5","Conn_01x3","PinHeader_1x03_P2.54mm_Vertical",148.975453,-120.599200,90.000000,bottom
 "J6","Conn_01x3","PinHeader_1x03_P2.54mm_Vertical",159.287853,-120.599200,90.000000,bottom
 "J7","Conn_01x10","PinSocket_1x10_P2.54mm_Vertical",166.370000,-100.330000,180.000000,bottom
+"J9","Conn_01x2","PinSocket_1x02_P2.54mm_Vertical",107.774304,-26.702626,0.000000,bottom
 "J10","Conn_01x12","PinSocket_1x12_P2.54mm_Vertical",130.810000,-74.930000,-90.000000,bottom
 "J13","Conn_01x10","PinSocket_1x10_P2.54mm_Vertical",104.140000,-21.540000,180.000000,bottom
 "A1","Arduino_Nano_v2.x","Arduino_Nano",148.590000,-33.020000,-90.000000,top
@@ -53,10 +53,10 @@ Ref,Val,Package,PosX,PosY,Rot,Side
 "R22","100k","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",139.700000,-62.230000,-90.000000,top
 "R23","100k","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",152.400000,-67.310000,180.000000,top
 "R24","100k","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",142.240000,-69.850000,0.000000,top
-"R25","100r","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",133.276000,-29.236000,90.000000,top
-"R26","100r","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",130.126400,-29.236000,90.000000,top
-"R27","100r","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",126.875200,-29.236000,90.000000,top
-"R28","100r","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",123.649400,-29.236000,90.000000,top
+"R25","4.7k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",133.276000,-29.236000,90.000000,top
+"R26","4.7k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",130.126400,-29.236000,90.000000,top
+"R27","4.7k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",126.875200,-29.236000,90.000000,top
+"R28","4.7k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",123.649400,-29.236000,90.000000,top
 "R29","10r","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",153.670000,-113.030000,180.000000,top
 "R30","10r","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",147.269200,-86.791800,180.000000,top
 "R31","10k","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",135.850047,-92.563624,90.000000,top

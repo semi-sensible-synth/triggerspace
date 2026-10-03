@@ -23362,7 +23362,7 @@
 		)
 	)
 	(symbol
-		(lib_id "NanoGris-rescue:+5V-power-GridsNanoV3-rescue")
+		(lib_id "NanoGris-rescue:+12V-power-GridsNanoV3-rescue")
 		(at 74.93 27.94 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -23379,7 +23379,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+12V"
 			(at 75.311 23.5458 0)
 			(effects
 				(font
@@ -24778,7 +24778,7 @@
 				)
 			)
 		)
-		(property "Value" "100r"
+		(property "Value" "4.7k"
 			(at 40.64 50.3936 90)
 			(effects
 				(font
@@ -24845,7 +24845,7 @@
 				)
 			)
 		)
-		(property "Value" "100r"
+		(property "Value" "4.7k"
 			(at 40.64 77.0636 90)
 			(effects
 				(font
@@ -24912,7 +24912,7 @@
 				)
 			)
 		)
-		(property "Value" "100r"
+		(property "Value" "4.7k"
 			(at 40.64 68.1736 90)
 			(effects
 				(font
@@ -24979,7 +24979,7 @@
 				)
 			)
 		)
-		(property "Value" "100r"
+		(property "Value" "4.7k"
 			(at 40.64 59.2836 90)
 			(effects
 				(font
@@ -29891,6 +29891,139 @@
 					(reference "J1")
 					(unit 1)
 				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 35.56 20.32 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "948664fa-87f8-4eaa-93ef-0a95555a9334")
+		(property "Reference" "J9"
+			(at 37.592 20.5232 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x2"
+			(at 37.592 22.8346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
+			(at 35.56 20.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 35.56 20.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 35.56 20.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5cd1099e-291b-4a03-818b-5f65d99e3208")
+		)
+		(pin "2"
+			(uuid "54ae1ebb-4ff2-45c3-aeb9-03da0b90d02e")
+		)
+		(instances
+			(project "triggerspace"
+				(path "/a5cd8da1-8f7f-4f80-bb23-0317de562222"
+					(reference "J9")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 25.4 20.32) (xy 30.48 20.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ffa9dc17-931b-49f0-a6bf-d2219454af3d")
+	)
+	(wire
+		(pts
+			(xy 25.4 22.86) (xy 30.48 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "29470ce8-fd3f-48c3-be5e-50e31cc10630")
+	)
+	(global_label "IN_MIDI"
+		(shape bidirectional)
+		(at 25.4 20.32 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "5c52f018-5740-44ec-aa3e-282a29a627f3")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 15.2826 20.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "OUT_MIDI"
+		(shape bidirectional)
+		(at 25.4 22.86 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "6d2afb1b-4efe-4ea3-9896-3df679884567")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 15.2826 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
 			)
 		)
 	)

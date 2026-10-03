@@ -59,7 +59,16 @@ Use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-se
   to clean up the sigma-delta hiss from the Gritty-drumsynth firmware's synthesised
   drum voices (see `plans/gritty-drumsynth.md` M8). Cap values/footprint TBD from
   bench testing.
-- Not yet bench-verified or fabricated — treat as a work-in-progress revision until
+- Arduino Nano VIN (A1 pin 30) is now fed from +12V (routed from the U4 input pin)
+  instead of the +5V rail, so the v0.042 VIN bodge is no longer needed. U4 still
+  supplies the module's +5V rail; the Nano's own 5V output (pin 27) stays unconnected.
+- LED resistors R25-R28 changed from 100r to 4.7k, and marked "RL" on the silkscreen.
+- Back PCB MIDI header (the 2-pin socket next to the USB end of the Nano) renamed J4 ->
+  J9 and added to the schematic - it previously existed only on the PCB and clashed with
+  the jack PCB's J4 (MIDI-IN/RND-OUT jumper). Front silkscreen labels corrected (pin 1
+  is D0/RX, pin 2 is D1/TX - they were swapped), and "MIDI IN"/"MIDI OUT" labels added
+  on the back silkscreen.
+- Not yet bench-verified or fabricated - treat as a work-in-progress revision until
   confirmed.
 
 ## v0.042 build guide notes (bodges required !)
@@ -73,13 +82,13 @@ Use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-se
 
 ## Beyond v0.042 changes for next revision
 
-- VIN supply to Arduino Nano should be +12V rail, not +5V !!
+- **(Done in v0.5.0)** VIN supply to Arduino Nano should be +12V rail, not +5V !!
   - The 5V lines from the U4 voltage regulator should **NOT** connect to the VIN pin (pin 30).
   - Given the Nano generates a 5V output, this is probably enough to drive our op amps, CMOS shift register and transistor triggers. The LEDs connected to GPIOs are probably take the most current - the module draws 28mA idle and 38mA peak with all LEDs on. The typical voltage regulator on a Nano (or clone) should be able to supply at least 800mA with +12V input, so even if it's not ideal we have a lot of headroom. We could probably mark the voltage regulator and associated capacitors as optional on the silkscreen, and add a solder bridge jumper to connect pin 27 (Nano 5V output) to the 5V rail.
   - We also have enough space to use a 16pin power header and use the Eurorack 5V rail.
-- Add silkscreen labels MIDI IN/OUT to J4
+- **(Done in v0.5.0, header is now J9)** Add silkscreen labels MIDI IN/OUT to J4
 - U4 needs more clearance to lay down flat with heatsink on board (or just use a smaller 78L50 {TO-92} regulator - but it's nice to have the option to use a TO-220 package)
-- My LEDs are a bit bright. Increase the values of R25, R26, R27, R28 (1k ~ 4.7k - even 1k is quite bright) and 
+- **(Done in v0.5.0 - 4.7k)** My LEDs are a bit bright. Increase the values of R25, R26, R27, R28 (1k ~ 4.7k - even 1k is quite bright) and 
   label these as "RL" or something on silkscreen so they are easy identify and change as required.
 - Back board is a little too offset to the left. Push it ~1mm to the right.
 - Do we have room for mute switches/buttons on each channel ?
