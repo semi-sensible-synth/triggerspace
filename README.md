@@ -21,6 +21,7 @@ You might also call it _"NanoGris-MIDI"_. The front panel looks something like t
 - External clock input, via triggers or MIDI clock
 - Beat density (fill), X, Y and Chaos inputs to modify each pattern
 - MIDI TRS-A output, General MIDI drum notes on channel 10
+- MIDI TRS input accepts Type A and Type B (v0.5.0, [LPZW auto-crossover MIDI input](https://github.com/kay-lpzw/LPZW_TRS_MIDI))
 - 38mA peak current draw on +12V rail (28mA idle)
 
 ## Modifications from the NanoGris
@@ -53,6 +54,56 @@ Use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-se
   - Read MIDI notes from MIDI-IN, buffer the last 3 or 6 notes seen and play these for Out1-3, Accent 1-3
 - (Crazier ideas: pair it with a SAM2695 or VS1053B based module/expander for GM MIDI audio out ! There seem to be NOS versions on AliExpress ....)
 
+## Build options
+
+### MIDI IN optocoupler (U8 / U9)
+
+From v0.5.0 the MIDI input is the
+[LPZW auto-crossover MIDI input](https://github.com/kay-lpzw/LPZW_TRS_MIDI) by Kay Knofe
+of LPZW.modules, first used in their WK3 MIDI Thru module. **This input stage is not our
+design.** Its author asks that it is credited as the "LPZW auto-crossover MIDI input"
+wherever it is mentioned; the credit is on the jack PCB silkscreen next to the circuit,
+here, and should be kept in any manual.
+
+It accepts TRS Type A and Type B cables with no switch: the two LEDs of a dual
+optocoupler sit anti-parallel across tip and ring, each with its own 220R (R51, R48).
+Whichever way round the loop current flows, one LED lights, and the two open-collector
+outputs share one 1k pull-up (R47), so the Nano sees the same signal either way.
+
+Fit one of these:
+
+| Build | U8 (DIP-8 socket) | U9 (SOIC-8) | D7 | JP3, JP4 | Accepts |
+|---|---|---|---|---|---|
+| **Default** | HCPL-2630 or HCPL-2631 | not fitted | not fitted | as made (1-2 bridged) | Type A and B |
+| SMD optocoupler | not fitted, no socket | HCPL-0630 or HCPL-0631 | not fitted | as made (1-2 bridged) | Type A and B |
+| 6N138 (as v0.042) | 6N138 | not fitted | 1N4148 | cut 1-2, bridge 2-3 | Type A only |
+
+- U9 sits inside U8's DIP-8 footprint on the back of the jack PCB, so fit U8 or U9,
+  never both - a DIP socket would sit on top of U9. The HCPL-263x (DIP-8) and HCPL-063x
+  (SOIC-8) have the same pinout.
+- R46 (4.7k) is fitted in every build but only connected (through JP4) in the 6N138
+  build, where it is the 6N138's base resistor. R51 is only used by the dual
+  optocouplers; with a 6N138 it goes to an unconnected pin.
+- D7 protects the 6N138's LED from reverse voltage. Don't fit it with a dual
+  optocoupler: it would sit across one of the LEDs and take the current meant for the
+  other, so Type B input would stop working.
+- The HCPL-263x/063x is guaranteed to switch at 5mA LED current. A 5V MIDI 1.0 sender
+  into a 220R receiver gives about 5mA, so worst-case parts are marginal (typical parts
+  switch at about 2mA); 3.3V senders built to the MIDI Association's CA-33 values give
+  about 7mA. The 6N138 needs only about 1.6mA, so it tolerates weaker Type A senders.
+- Sourcing (JLCPCB, October 2026): the SOIC-8 HCPL-0630 is well stocked; DIP-8 HCPL-263x
+  stock there is low, so buy those elsewhere or use the SOIC-8 build.
+
+See [Jumpers](#jumpers) for JP3/JP4 and the other jumper settings.
+
+### RC reconstruction caps (CH*_CAP1)
+
+The six 2-pin sockets next to the output jacks on the jack PCB (`CH1_CAP1`,
+`CH1_ACC_CAP1`, `CH2_CAP1`, `CH2_ACC_CAP1`, `CH3_CAP1`, `CH3_ACC_CAP1`) take optional
+capacitors to GND that filter the sigma-delta hiss from the Gritty-drumsynth firmware's
+synthesised drum voices. Leave them empty for trigger outputs (Gritty-Grids firmware).
+Values are still to be chosen (see TODO / IDEAS).
+
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for the changes in each hardware revision.
@@ -78,4 +129,3 @@ See [CHANGELOG.md](CHANGELOG.md) for the changes in each hardware revision.
   silkscreen and add a solder bridge jumper from pin 27 (Nano 5V output) to the 5V rail.
   - We also have enough space to use a 16pin power header and use the Eurorack 5V rail.
 - Do we have room for mute switches/buttons on each channel ?
-- Consider using the [LPZW_TRS_MIDI](https://github.com/kay-lpzw/LPZW_TRS_MIDI/) circuit to support both Type A and Type B TRS MIDI wiring. This requires a dual-channel optocoupler (HCPL-0731 (SMD), HCPL-2631 or HCPL-2630 (THT), or HCPL-0631 (SMD)) which is more expensive than a 6N138. We could use two 6N138's but don't have space. We could use two TLP113's (SMD) but these are EOL.

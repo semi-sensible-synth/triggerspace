@@ -26,6 +26,16 @@ Not yet fabricated or bench-verified.
   firmware as a git submodule, plus two in-tree forks - Gritty-drumsynth (synthesised
   808/909-style drum voices on the output jacks) and Gritty-osc (six-voice DDS chord
   oscillator with arpeggiator and MIDI note control).
+- MIDI IN accepts both TRS Type A and Type B, using the
+  [LPZW auto-crossover MIDI input](https://github.com/kay-lpzw/LPZW_TRS_MIDI) by Kay
+  Knofe of LPZW.modules (credited on the jack PCB silkscreen). U8 is now a dual
+  optocoupler (HCPL-2630) whose two LEDs are anti-parallel across tip and ring, each
+  with its own 220R (R48 and the new R51).
+- U9: optional SOIC-8 footprint (HCPL-0630) inside U8's DIP-8 footprint, for builds
+  that use the SMD part instead of the DIP-8 one. Fit U8 or U9, not both.
+- Solder jumpers JP3 and JP4 (default pads 1-2 bridged) so the board can still be built
+  with a 6N138 in U8 as before: cut 1-2, bridge 2-3 and fit D7. See "Build options" in
+  the README.
 
 ### Changed
 
@@ -41,6 +51,10 @@ Not yet fabricated or bench-verified.
 - Back PCB outline moved 1mm to the right (as seen from the front panel). All parts and
   inter-board headers stay put, so the back PCB's left edge is now flush with the jack
   PCB's (previously it overhung by ~0.9mm).
+- MIDI IN pull-up R47 changed from 220R to 1k (220R would sink ~23mA through the
+  HCPL-263x output, which is specified at 13mA). D7 (1N4148) is now only fitted for the
+  6N138 build, R46 (4.7k) uses a 5.08mm-pitch footprint, and the area around U8 on the
+  jack PCB was re-placed and re-routed.
 - PCB layout revisions.
 - Version on the schematic title block and PCB silkscreen updated to v0.5.0.
 
