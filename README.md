@@ -104,6 +104,69 @@ capacitors to GND that filter the sigma-delta hiss from the Gritty-drumsynth fir
 synthesised drum voices. Leave them empty for trigger outputs (Gritty-Grids firmware).
 Values are still to be chosen (see TODO / IDEAS).
 
+## Jumpers
+
+Solder jumpers (JP) are shorted by a copper trace between their pads as made; cut the
+trace with a craft knife to open them, and bridge pads with solder to close them. Pin
+jumpers (J) are 2.54mm headers for jumper caps. Pin 1 of each header is the square pad.
+The silkscreen next to each header repeats its settings.
+
+Firmware and jack function settings, as shipped:
+
+| Function | Gritty-Grids firmware (MIDI, default) | Stock Grids/NanoGris firmware (triggers) |
+|---|---|---|
+| Clock input to the Nano | JP2 bridged (clock on D8) | cut JP2, fit J2 (clock on D1) |
+| Nano D1/TX | JP1 bridged (D1 drives MIDI OUT) | cut JP1, fit J1 (see below) |
+| CLOCK / MIDI OUT jack | J6 1-2, J3 3-4 (optionally also J3 1-2) | J6 2-3, J3 1-2 |
+| RND / MIDI IN jack | J8 2-3, J5 1-2, J4 3-4 | J8 1-2, J5 2-3, J4 1-2 |
+
+The jack settings are independent of the firmware: with Gritty-Grids you can still set
+either jack back to a trigger output, and the MIDI clock or MIDI notes on that port are
+then lost.
+
+### Back PCB
+
+![Back PCB jumper locations](images/jumpers/back_pcb_front.png "Back PCB jumpers")
+
+- **JP1** (bridged) connects Nano D1/TX to the MIDI OUT line (`OUT_MIDI`, through R49
+  to the jack). **JP2** (bridged) connects the clock input transistor (Q1) to D8. Both
+  stay bridged for Gritty-Grids.
+- **J1** connects D8 to the MIDI OUT line and **J2** connects the clock input to D1.
+  The silkscreen instruction for stock firmware is "cut JP1 & JP2, bridge jumper J1,
+  J2": the clock input then reaches D1, where the stock firmware reads it, and D1 is no
+  longer connected to the MIDI OUT line. Don't fit J1 or J2 with JP1 and JP2 still
+  bridged.
+- **J5** (3-pin, to the RND / MIDI IN jack via the jack PCB): 1-2 = MIDI IN (optocoupler
+  output to D0/RX), 2-3 = RND trigger output.
+- **J6** (3-pin, to the CLOCK / MIDI OUT jack via the jack PCB): 1-2 = MIDI OUT (D1/TX
+  through R49), 2-3 = CLOCK trigger output.
+- **J9** (2-pin, silkscreen "MIDI IN" / "MIDI OUT"): pin 1 = D0/RX, pin 2 = D1/TX
+  (logic level, before R49). Use it to wire up a different MIDI interface (e.g. a DIN
+  socket board). If you feed a MIDI signal into pin 1, remove the J5 jumper so the
+  optocoupler output doesn't drive the same line.
+
+### Jack PCB
+
+![Jack PCB jumper locations](images/jumpers/jack_pcb_rear.png "Jack PCB jumpers")
+
+- **J3** (4-pin, CLOCK / MIDI OUT jack): 1-2 connects the sleeve to GND, 3-4 connects the
+  ring to +5V through R50. CLOCK OUT: 1-2. MIDI OUT: 3-4; also fit 1-2 so the sleeve
+  (cable shield) is grounded at the sending end, as the MIDI specification asks.
+- **J4** (4-pin, RND / MIDI IN jack): 1-2 connects the sleeve to GND, 3-4 connects the
+  ring to the optocoupler. RND OUT: 1-2. MIDI IN: 3-4 only; leave 1-2 open, since a MIDI
+  receiver must not ground the cable shield.
+- **J8** (3-pin, RND / MIDI IN jack tip): 1-2 = RND trigger output to the tip, 2-3 =
+  optocoupler output to the back PCB (MIDI IN).
+- **JP3** and **JP4** (3-pad solder jumpers, 1-2 bridged as made) select the MIDI IN
+  optocoupler type. Leave them as made for the dual optocoupler (HCPL-263x in U8, or
+  HCPL-063x in U9). For a 6N138, cut 1-2 and bridge 2-3 on both, and fit D7. See
+  [MIDI IN optocoupler](#midi-in-optocoupler-u8--u9).
+  - JP3 pad 2 goes to U8 pin 2 (HCPL-263x: LED 1 cathode; 6N138: LED anode). Pad 1 =
+    jack ring (dual optocoupler), pad 3 = the R48 / D7 node (6N138).
+  - JP4 pad 2 goes to U8 pin 7 (HCPL-263x: output 1; 6N138: transistor base). Pad 1 =
+    the shared output and R47 pull-up (dual optocoupler), pad 3 = R46 4.7k to GND
+    (6N138).
+
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for the changes in each hardware revision.
