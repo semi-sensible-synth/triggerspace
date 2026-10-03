@@ -63,6 +63,15 @@ Use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-se
   instead of the +5V rail, so the v0.042 VIN bodge is no longer needed. U4 still
   supplies the module's +5V rail; the Nano's own 5V output (pin 27) stays unconnected.
 - LED resistors R25-R28 changed from 100r to 4.7k, and marked "RL" on the silkscreen.
+- U4 (L7805, TO-220) now uses a horizontal tab-down footprint: it lies flat on the back
+  PCB with its M3 tab hole, and the GND pour under the tab (with stitching vias) acts as
+  the heatsink. Only GND copper is under the tab on the top layer. C12 moved up slightly
+  to make room. The whole v0.042 module (Nano included) drew 28-38mA from +12V, so U4
+  now dissipates at most (12-5)V x 38mA = ~0.27W, and a separate heatsink shouldn't be
+  needed.
+- Back PCB outline moved 1mm to the right (as seen from the front panel). All parts and
+  inter-board headers stay put, so the back board's left edge is now flush with the jack
+  PCB's (previously it overhung by ~0.9mm).
 - Back PCB MIDI header (the 2-pin socket next to the USB end of the Nano) renamed J4 ->
   J9 and added to the schematic - it previously existed only on the PCB and clashed with
   the jack PCB's J4 (MIDI-IN/RND-OUT jumper). Front silkscreen labels corrected (pin 1
@@ -87,9 +96,9 @@ Use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-se
   - Given the Nano generates a 5V output, this is probably enough to drive our op amps, CMOS shift register and transistor triggers. The LEDs connected to GPIOs are probably take the most current - the module draws 28mA idle and 38mA peak with all LEDs on. The typical voltage regulator on a Nano (or clone) should be able to supply at least 800mA with +12V input, so even if it's not ideal we have a lot of headroom. We could probably mark the voltage regulator and associated capacitors as optional on the silkscreen, and add a solder bridge jumper to connect pin 27 (Nano 5V output) to the 5V rail.
   - We also have enough space to use a 16pin power header and use the Eurorack 5V rail.
 - **(Done in v0.5.0, header is now J9)** Add silkscreen labels MIDI IN/OUT to J4
-- U4 needs more clearance to lay down flat with heatsink on board (or just use a smaller 78L50 {TO-92} regulator - but it's nice to have the option to use a TO-220 package)
+- **(Done in v0.5.0 - flat tab-down footprint)** U4 needs more clearance to lay down flat with heatsink on board (or just use a smaller 78L50 {TO-92} regulator - but it's nice to have the option to use a TO-220 package)
 - **(Done in v0.5.0 - 4.7k)** My LEDs are a bit bright. Increase the values of R25, R26, R27, R28 (1k ~ 4.7k - even 1k is quite bright) and 
   label these as "RL" or something on silkscreen so they are easy identify and change as required.
-- Back board is a little too offset to the left. Push it ~1mm to the right.
+- **(Done in v0.5.0)** Back board is a little too offset to the left. Push it ~1mm to the right.
 - Do we have room for mute switches/buttons on each channel ?
 - Consider using the [LPZW_TRS_MIDI](https://github.com/kay-lpzw/LPZW_TRS_MIDI/) circuit to support both Type A and Type B TRS MIDI wiring. This requires a dual-channel optocoupler (HCPL-0731 (SMD), HCPL-2631 or HCPL-2630 (THT), or HCPL-0631 (SMD)) which is more expensive than a 6N138. We could use two 6N138's but don't have space. We could use two TLP113's (SMD) but these are EOL.
