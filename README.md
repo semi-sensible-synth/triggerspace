@@ -23,7 +23,7 @@ The front panel looks something like this:
 - MIDI TRS-A output, General MIDI drum notes on channel 10
 - MIDI TRS input accepts Type A and Type B (v0.5.0, [LPZW auto-crossover MIDI input](https://github.com/kay-lpzw/LPZW_TRS_MIDI))
 - 38mA peak current draw on +12V rail (28mA idle)
-- Experimental alternative firmwares: 6-voice oscillator [Gritty-osc](firmwares/Gritty-osc) and drum hit rompler [Gritty-sampler](firmwares/Gritty-sampler)
+- Experimental alternative firmwares: 6-voice oscillator [Gritty-osc](https://github.com/semi-sensible-synth/triggerspace/blob/main/firmware/Gritty-osc/README.md) and drum hit synth [Gritty-drumsynth](https://github.com/semi-sensible-synth/triggerspace/blob/main/firmware/Gritty-drumsynth/README.md)
 
 ## Firmware
 
