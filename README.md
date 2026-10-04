@@ -111,6 +111,35 @@ build. Fit U5 or D8, not both.
   less stable voltage than the LM4040. The voltage shifts the CV input offsets slightly;
   it doesn't affect the triggers.
 
+### +5V supply and power header (U4, JP5, JP6, J12)
+
+The +5V rail (op amps, shift register, pots, trigger transistors) can come from one of
+three sources. Use exactly one: don't connect two regulator outputs together.
+
+| +5V source | U4, C11, C12 | JP5 | JP6 | Power cable |
+|---|---|---|---|---|
+| **U4 (L7805), default** | fitted | open | open | 10-pin or 16-pin |
+| Nano's regulator | not fitted | bridged | open | 10-pin or 16-pin |
+| Eurorack +5V | not fitted | open | bridged | 16-pin, from a PSU with +5V |
+
+U4, C11 and C12 are marked "OPTIONAL" on the silkscreen. JP5 and JP6 are open as made.
+
+- **Nano's regulator (JP5):** since v0.5.0 the Nano's VIN is fed from +12V, so its
+  onboard 5V regulator is running anyway. JP5 connects the Nano's 5V pin (A1 pin 27) to
+  the +5V rail, so that regulator supplies the whole module. The v0.042 module drew
+  28-38mA from +12V in total, so the regulator dissipates about (12V - 5V) x 38mA =
+  0.27W. With JP5 bridged, the Nano's USB port also powers the +5V rail when the module
+  has no Eurorack power.
+- **Eurorack +5V (JP6):** J12 is a 16-pin (2x8) footprint. Pins 11 and 12 are the
+  Eurorack +5V rail, connected to the module's +5V rail through JP6. Pins 13-16 (CV and
+  Gate buses) are not connected. With JP6 open, a 16-pin cable is safe whether or not
+  the PSU provides +5V.
+- **10-pin header in the 16-pin footprint:** a 2x5 header fits in J12 pins 1-10 (the
+  end with the square pad, marked "RED!!" for the cable's -12V stripe), so 10-pin cables
+  still work. The
+  silkscreen outline is drawn for a 16-pin shrouded header; line up a 10-pin header's
+  pin 1 with the square pad.
+
 ### RC reconstruction caps (CH*_CAP1)
 
 The six 2-pin sockets next to the output jacks on the jack PCB (`CH1_CAP1`,
@@ -121,8 +150,9 @@ Values are still to be chosen (see TODO / IDEAS).
 
 ## Jumpers
 
-Solder jumpers (JP) are shorted by a copper trace between their pads as made; cut the
-trace with a craft knife to open them, and bridge pads with solder to close them. Pin
+Most solder jumpers (JP1-JP4) are shorted by a copper trace between their pads as made;
+cut the trace with a craft knife to open them. JP5 and JP6 are open as made. Bridge pads
+with solder to close a jumper. Pin
 jumpers (J) are 2.54mm headers for jumper caps. Pin 1 of each header is the square pad.
 The silkscreen next to each header repeats its settings.
 
@@ -134,6 +164,7 @@ Firmware and jack function settings, as shipped:
 | Nano D1/TX | JP1 bridged (D1 drives MIDI OUT) | cut JP1, fit J1 (see below) |
 | CLOCK / MIDI OUT jack | J6 1-2, J3 3-4 (optionally also J3 1-2) | J6 2-3, J3 1-2 |
 | RND / MIDI IN jack | J8 2-3, J5 1-2, J4 3-4 | J8 1-2, J5 2-3, J4 1-2 |
+| +5V source | U4 fitted, JP5 and JP6 open | same |
 
 The jack settings are independent of the firmware: with Gritty-Grids you can still set
 either jack back to a trigger output, and the MIDI clock or MIDI notes on that port are
@@ -159,6 +190,10 @@ then lost.
   (logic level, before R49). Use it to wire up a different MIDI interface (e.g. a DIN
   socket board). If you feed a MIDI signal into pin 1, remove the J5 jumper so the
   optocoupler output doesn't drive the same line.
+- **JP5** (open, below the Nano): bridge to power the +5V rail from the Nano's
+  regulator. **JP6** (open, next to J12): bridge to power the +5V rail from the Eurorack
+  +5V on a 16-pin cable. Fit U4, C11 and C12 only if both are open. See
+  [+5V supply and power header](#5v-supply-and-power-header-u4-jp5-jp6-j12).
 
 ### Jack PCB
 
@@ -200,10 +235,6 @@ See [CHANGELOG.md](CHANGELOG.md) for the changes in each hardware revision.
 - Fabricate and bench-verify v0.5.0.
 - Choose the RC reconstruction-cap values (and confirm the socket footprint) by bench
   testing with the Gritty-drumsynth firmware.
-- Power: the Nano now runs from +12V via its own regulator, which can probably supply
-  the whole 5V rail (op amps, CMOS shift register, transistor triggers; the module drew
-  28mA idle and 38mA peak with all LEDs on, and a Nano's regulator should supply at
-  least 800mA from +12V). We could mark U4 and its capacitors as optional on the
-  silkscreen and add a solder bridge jumper from pin 27 (Nano 5V output) to the 5V rail.
-  - We also have enough space to use a 16pin power header and use the Eurorack 5V rail.
+- Bench-test the +5V supply options (JP5: Nano regulator, JP6: Eurorack +5V) without
+  U4.
 - Do we have room for mute switches/buttons on each channel ?

@@ -36,6 +36,12 @@ Not yet fabricated or bench-verified.
 - Solder jumpers JP3 and JP4 (default pads 1-2 bridged) so the board can still be built
   with a 6N138 in U8 as before: cut 1-2, bridge 2-3 and fit D7. See "Build options" in
   the README.
+- +5V supply options: JP5 (open) connects the Nano's 5V output (A1 pin 27) to the +5V
+  rail, and JP6 (open) connects the Eurorack +5V (power header pins 11/12) to it, so
+  U4, C11 and C12 can be left out. They are marked "OPTIONAL" on the silkscreen. See
+  "Build options" in the README.
+- J12 (power header) is now a 16-pin (2x8) footprint; a 10-pin header still fits in pins
+  1-10.
 - D8: optional footprint for a 5.1V zener (DO-35, upright) in parallel with U5, as an
   alternative to the LM4040LP-5 for the -5V reference. Fit U5 or D8, not both.
 
@@ -43,7 +49,8 @@ Not yet fabricated or bench-verified.
 
 - Arduino Nano VIN (A1 pin 30) is now fed from +12V (from the U4 input pin) instead of
   the +5V rail, so the v0.042 VIN bodge is no longer needed. U4 still supplies the
-  module's +5V rail; the Nano's own 5V output (pin 27) stays unconnected.
+  module's +5V rail by default; the Nano's own 5V output (pin 27) can be connected to
+  it with JP5.
 - LED resistors R25-R28 changed from 100r to 4.7k (the LEDs were too bright).
 - U4 (L7805, TO-220) now uses a horizontal tab-down footprint: it lies flat on the back
   PCB with its M3 tab hole, and the GND pour under the tab (with stitching vias) acts as
@@ -57,6 +64,8 @@ Not yet fabricated or bench-verified.
   HCPL-263x output, which is specified at 13mA). D7 (1N4148) is now only fitted for the
   6N138 build, R46 (4.7k) uses a 5.08mm-pitch footprint, and the area around U8 on the
   jack PCB was re-placed and re-routed.
+- D5 moved left and R29 now stands upright (2.54mm pitch) to make room for the 16-pin
+  power header; the power tracks around J12 were re-routed.
 - PCB layout revisions.
 - Version on the schematic title block and PCB silkscreen updated to v0.5.0.
 
