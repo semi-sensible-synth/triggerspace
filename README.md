@@ -40,6 +40,16 @@ This Gritty-Grids fork:
   Out 3 (no accent): 42 (0x2a, F#1) - closed hi-hat
   Out 3 (accented):  46 (0x2e, Bb1) - open hi-hat
   ```
+- Maps accents to MIDI note velocity: accented steps are sent at velocity 127 and
+  unaccented steps at 90. Accented hi-hat steps also switch to the open hi-hat note (46).
+  - Accents only exist in drum mode. With the clock output option on, Grids
+    has a single common accent output, so that accent applies to all three drums.
+  - In Euclidean mode there are no accents: every note is sent at velocity 127 as the
+    closed hi-hat.
+  - Set by `midi_accent_velocity` in `grids/grids.cc` (default on). When off, every note
+    is sent at 127; the open/closed hi-hat switch still follows the accent. It can only
+    be changed by recompiling for now.
+  - Gritty-drumsynth sends MIDI notes the same way.
 
 ## Build options
 
@@ -229,7 +239,6 @@ See [CHANGELOG.md](CHANGELOG.md) for the changes in each hardware revision.
 
 ### Future firmware ideas
 
-- We could change velocity based on accent (for bass and snare)
 - Disting Ex SD 6 Triggers mode, where notes span 48-53 (unaccented and accented)
 - Chord/arp output over MIDI. Set the chord root/inversion to be played via one of the CV inputs, or MIDI-IN
   - Read MIDI notes from MIDI-IN, buffer the last 3 or 6 notes seen and play these for Out1-3, Accent 1-3

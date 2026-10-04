@@ -525,32 +525,67 @@ inline void UpdateLeds()
   leds.Write(pattern);
 }
 
+// MIDI note velocity. When midi_accent_velocity is true, accented drum steps
+// are sent at kVelocityAccent and unaccented ones at kVelocityNormal; when
+// false (or in a mode without accents), every note is sent at kVelocityAccent.
+// Only settable by recompiling for now, but kept as a variable so it can later
+// be toggled at runtime (e.g. from the panel controls or a SysEx message).
+bool midi_accent_velocity = true;
+const uint8_t kVelocityAccent = 127;
+const uint8_t kVelocityNormal = 90;
+
+inline uint8_t NoteVelocity(bool has_accents, uint8_t accented)
+{
+  return (midi_accent_velocity && has_accents && !accented) ? kVelocityNormal : kVelocityAccent;
+}
+
+// Accent bits for BD, SD, HH (bits 0-2) from the pattern generator state.
+// Only drum mode has accents: one bit per instrument in state bits 3-5, or with
+// the clock output option a single common accent bit, applied to every
+// instrument. In Euclidean mode bits 3-5 are reset pulses, not accents.
+inline uint8_t AccentBits(uint8_t state)
+{
+  if (pattern_generator.output_mode() != OUTPUT_MODE_DRUMS)
+  {
+    return 0;
+  }
+  if (pattern_generator.output_clock())
+  {
+    return (state & OUTPUT_BIT_COMMON) ? 0x07 : 0;
+  }
+  return (state >> 3) & 0x07;
+}
+
 inline void BufferMidiMessages(uint8_t state)
 {
+  bool has_accents = pattern_generator.output_mode() == OUTPUT_MODE_DRUMS;
+  uint8_t accents = AccentBits(state);
+
   if (state & 0x01)
-  {
-    grids::MidiDevice::BufferNote(MIDI_CHANNEL, BD_NOTE, 0x7f);
+  { // BD
+    grids::MidiDevice::BufferNote(MIDI_CHANNEL, BD_NOTE, NoteVelocity(has_accents, accents & 0x01));
   }
   if (state & 0x02)
-  {
-    grids::MidiDevice::BufferNote(MIDI_CHANNEL, SD_NOTE, 0x7f);
+  { // SD
+    grids::MidiDevice::BufferNote(MIDI_CHANNEL, SD_NOTE, NoteVelocity(has_accents, accents & 0x02));
   }
   if (state & 0x04)
-  {
-    if (state & 0x20)
+  { // HH: accented steps play the open hi-hat
+    uint8_t velocity = NoteVelocity(has_accents, accents & 0x04);
+    if (accents & 0x04)
     {
-      grids::MidiDevice::BufferNote(MIDI_CHANNEL, HH_ACCENT_NOTE, 0x7f);
+      grids::MidiDevice::BufferNote(MIDI_CHANNEL, HH_ACCENT_NOTE, velocity);
     }
     else
     {
-      grids::MidiDevice::BufferNote(MIDI_CHANNEL, HH_NOTE, 0x7f);
+      grids::MidiDevice::BufferNote(MIDI_CHANNEL, HH_NOTE, velocity);
     }
   }
 }
 
 // Integration point: a sequencer trigger no longer writes a raw bit to the 595
 // (the audio ISR owns it now) — instead a newly-set drum bit FIRES that voice's
-// envelope. Accents come from the matching accent bit. MIDI-out is unchanged.
+// envelope. Accents come from AccentBits() (none in Euclidean mode).
 inline void UpdateShiftRegister()
 {
   static uint8_t previous_state = 0;
@@ -577,9 +612,10 @@ inline void UpdateShiftRegister()
     uint8_t newly_set = state & ~previous_state;   // rising drum edges
     previous_state = state;
 
-    if (newly_set & 0x01) { v_trigger |= 0x01; if (state & 0x08) v_accent |= 0x01; }
-    if (newly_set & 0x02) { v_trigger |= 0x02; if (state & 0x10) v_accent |= 0x02; }
-    if (newly_set & 0x04) { v_trigger |= 0x04; if (state & 0x20) v_accent |= 0x04; }
+    uint8_t accents = AccentBits(state);
+    if (newly_set & 0x01) { v_trigger |= 0x01; if (accents & 0x01) v_accent |= 0x01; }
+    if (newly_set & 0x02) { v_trigger |= 0x02; if (accents & 0x02) v_accent |= 0x02; }
+    if (newly_set & 0x04) { v_trigger |= 0x04; if (accents & 0x04) v_accent |= 0x04; }
 
     BufferMidiMessages(state);
 

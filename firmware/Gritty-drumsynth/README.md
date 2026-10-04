@@ -94,6 +94,10 @@ Enter with one long-hold. Move a knob to set its parameter (LEDs indicate state)
 | **Y** | Gate mode |
 | **Randomness** | Clock output on/off |
 
+Accents (the louder accent layer on the voices, and the MIDI note-out velocity) only
+exist in drum output mode. With clock output on, Grids has a single common accent, so it
+applies to all three voices. In Euclidean mode no hits are accented.
+
 ## Per-hit humanisation (Randomness knob)
 
 In PERFORM mode the Randomness knob does double duty: besides pattern chaos it
@@ -114,6 +118,9 @@ MIDI I/O is on the TRS jacks (D0/D1, 31250 baud). Drum channel is **10**.
   **38** = snare, **42** = closed hat, **46** = open hat (plus GM neighbours).
   Velocity ≥ 96 fires the accent layer.
 - **Note-out:** the sequencer also sends GM drum notes (36/38/42/46) on ch 10.
+  Accented steps are sent at velocity 127 and unaccented at 90, and accented hats use
+  the open hat note (46). Set by `midi_accent_velocity` in `grids/grids.cc` (default
+  on; when off every note is sent at 127).
 - **CC live voice tuning** (any time, independent of edit page):
 
   | CC | Parameter | CC | Parameter |
