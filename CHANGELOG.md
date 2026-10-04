@@ -36,6 +36,8 @@ Not yet fabricated or bench-verified.
 - Solder jumpers JP3 and JP4 (default pads 1-2 bridged) so the board can still be built
   with a 6N138 in U8 as before: cut 1-2, bridge 2-3 and fit D7. See "Build options" in
   the README.
+- D8: optional footprint for a 5.1V zener (DO-35, upright) in parallel with U5, as an
+  alternative to the LM4040LP-5 for the -5V reference. Fit U5 or D8, not both.
 
 ### Changed
 

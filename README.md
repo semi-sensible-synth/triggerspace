@@ -96,6 +96,21 @@ Fit one of these:
 
 See [Jumpers](#jumpers) for JP3/JP4 and the other jumper settings.
 
+### -5V reference: LM4040 or 5.1V zener (U5 / D8)
+
+U5 (LM4040LP-5, TO-92) makes the -5V reference (`ref_5`) for the CV input offsets,
+fed from -12V through R31 (10k). D8 is an alternative footprint in parallel with it for
+a 5.1V zener diode (DO-35, e.g. BZX79C5V1 or 1N5231B), which worked well on a v0.042
+build. Fit U5 or D8, not both.
+
+- D8 sits inside U5's outline and is mounted upright: the diode body goes on the round
+  pad with the cathode band at the top, and the bent lead goes into the square pad
+  (marked K, to GND). The anode is on `ref_5`, because the reference is negative.
+- R31 sets the zener current to about (12V - 5.1V) / 10k = 0.7mA. This is below the
+  5-20mA test current of common 5.1V zeners, so expect a little less than 5.1V and a
+  less stable voltage than the LM4040. The voltage shifts the CV input offsets slightly;
+  it doesn't affect the triggers.
+
 ### RC reconstruction caps (CH*_CAP1)
 
 The six 2-pin sockets next to the output jacks on the jack PCB (`CH1_CAP1`,
@@ -176,7 +191,7 @@ See [CHANGELOG.md](CHANGELOG.md) for the changes in each hardware revision.
   - Trying to power the Nano via 5V from U4 voltage regulator to VIN pin 30 didn't work here, despite the original NanoGris design doing it this way. Upon reflection this is no surprise ... 5V isn't enough for the typical AMS1117-5.0 regulator found on a Nano (clone), which needs ~>= 6.5V input to work ! I fixed this with a bodge as follows:
     - Melt the VIN pin 30 solder joint and push it 'up' so it doesn't insert into the female header. This disconnects the Nano from the U4 regulator, but still allows U4 to power the 5V rail in the rest of the module.
     - Attach a bodge wire from the +12V rail pin on the U4 voltage regulator to the protruding VIN pin 30 (I used a single female header to make it easy to remove the Nano if required).
-  - I didn't have an LM4040-5.0 on hand, but a 5.1V Zener diode seems to work well enough. Should be a valid option.
+  - I didn't have an LM4040-5.0 on hand, but a 5.1V Zener diode seems to work well enough. From v0.5.0 it has its own footprint (D8, see [Build options](#build-options)).
   - Can optionally use an 78L50 (TO-92) voltage regulator rather than L7805 (TO-220)
   - Sometimes flashing the firmware seems to fail (can't connect to device) when the Nano is in the module, but seems to work if you take out out of the PCB to flash ¯\_(ツ)_/¯
 
