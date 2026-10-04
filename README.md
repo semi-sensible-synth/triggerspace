@@ -2,16 +2,16 @@
 
 > **TESTED** - v0.042 works with some simple bodges (build notes below)
 >
-> **IN PROGRESS** - v0.5.0 removes the v0.042 bodges and adds RC reconstruction-cap
-> sockets on the jack PCB's outputs; not yet fabricated or bench-verified (see
+> **IN PROGRESS** - v0.5.0 removes the v0.042 bodges and adds optional RC reconstruction-cap
+> sockets on the jack PCB's outputs to support alternative oscillators/sampler firmware; not yet fabricated or bench-verified (see
 > [CHANGELOG.md](CHANGELOG.md))
 
-![View on KiCanvas](https://img.shields.io/badge/View_on-KiCanvas-purple?color=%238864CB&link=https%3A%2F%2Fgithub.com%2Fsemi-sensible-synth%2Ftriggerspace)
+[![View on KiCanvas](https://img.shields.io/badge/View_on-KiCanvas-purple?color=%238864CB)](https://kicanvas.org/?repo=https%3A%2F%2Fgithub.com%2Fsemi-sensible-synth%2Ftriggerspace)
 
 
 This is a remix of the [NanoGris](https://github.com/Quinienl/NanoGris) trigger sequence generator (by Quinie), which in turn was based on the original [Grids](https://pichenettes.github.io/mutable-instruments-documentation/modules/grids/) hardware design by Mutable Instruments / Émilie Gillet, used under a Creative Commons ShareAlike 3.0 License (CC BY-SA 3.0).
 
-You might also call it _"NanoGris-MIDI"_. The front panel looks something like this:
+The front panel looks something like this:
 
 ![triggerspace front panel render](images/front_panel_render.jpg "Front panel")
 
@@ -23,18 +23,13 @@ You might also call it _"NanoGris-MIDI"_. The front panel looks something like t
 - MIDI TRS-A output, General MIDI drum notes on channel 10
 - MIDI TRS input accepts Type A and Type B (v0.5.0, [LPZW auto-crossover MIDI input](https://github.com/kay-lpzw/LPZW_TRS_MIDI))
 - 38mA peak current draw on +12V rail (28mA idle)
+- Experimental alternative firmwares: 6-voice oscillator [Gritty-osc](https://github.com/semi-sensible-synth/Gritty-osc) and drum hit rompler [Gritty-sampler](https://github.com/semi-sensible-synth/Gritty-sampler)
 
-## Modifications from the NanoGris
+## Firmware
 
-- Added MIDI-IN TRS-A jack + 6N137 optocoupler for MIDI clock sync. The original Grids always had this option as an extra jumper on the PCB - now it's broken out onto a more cluttered front panel !
-- Added MIDI-OUT TRS-A - required changing the pin used for the clock in to allow use of hardware serial TX/RX, so this modules requires [custom firmware](https://github.com/semi-sensible-synth/Gritty-Grids) even if you aren't using the MIDI-OUT option.
-  - I've added pin jumpers and cuttable solder jumpers to allow re-routing for stock firmware if required/desired.
-- The CLOCK and RND outputs are repurposed as the TRS-A MIDI-OUT and MIDI-IN ports, respectively. Several pin jumpers can be used to choose if these act as MIDI ports or the original voltage-based trigger outputs.
-- Made more space between the FILL knobs (closer to original Grids layout), use a tactile button and cap for TAP button, various tweaks to routing and front panel design
+_The stock Grids/NanoGris firmware is not compatible_ - use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-sensible-synth/Gritty-Grids). Follow the instructions there to flash the firmware to your triggerspace module.
 
-## MIDI-out firmware
-
-Use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-sensible-synth/Gritty-Grids)
+This Gritty-Grids fork:
 
 - Supports modified Arduino Nano pin assignments used by _triggerspace_ hardware
 - Sends General MIDI drum notes on channel 10 to MIDI-OUT (TRS-A)
@@ -46,29 +41,15 @@ Use this: [Gritty-Grids firmware (triggerspace fork)](https://github.com/semi-se
   Out 3 (accented):  46 (0x2e, Bb1) - open hi-hat
   ```
 
-### Future firmware ideas
-
-- We could change velocity based on accent (for bass and snare)
-- Disting Ex SD 6 Triggers mode, where notes span 48-53 (unaccented and accented)
-- Chord/arp output over MIDI. Set the chord root/inversion to be played via one of the CV inputs, or MIDI-IN
-  - Read MIDI notes from MIDI-IN, buffer the last 3 or 6 notes seen and play these for Out1-3, Accent 1-3
-- (Crazier ideas: pair it with a SAM2695 or VS1053B based module/expander for GM MIDI audio out ! There seem to be NOS versions on AliExpress ....)
-
 ## Build options
 
 ### MIDI IN optocoupler (U8 / U9)
 
 From v0.5.0 the MIDI input is the
 [LPZW auto-crossover MIDI input](https://github.com/kay-lpzw/LPZW_TRS_MIDI) by Kay Knofe
-of LPZW.modules, first used in their WK3 MIDI Thru module. **This input stage is not our
-design.** Its author asks that it is credited as the "LPZW auto-crossover MIDI input"
-wherever it is mentioned; the credit is on the jack PCB silkscreen next to the circuit,
-here, and should be kept in any manual.
+of LPZW.modules.
 
-It accepts TRS Type A and Type B cables with no switch: the two LEDs of a dual
-optocoupler sit anti-parallel across tip and ring, each with its own 220R (R51, R48).
-Whichever way round the loop current flows, one LED lights, and the two open-collector
-outputs share one 1k pull-up (R47), so the Nano sees the same signal either way.
+It accepts TRS Type A and Type B cables with no switch. It works by using the two LEDs of a dual optocoupler in an 'anti-parallel' configuration across the tip and ring, each with its own 220R. Whichever way round the loop current flows, one LED lights, and the two open-collector outputs share one 1k pull-up (R47), so the Nano sees the same signal either way.
 
 Fit one of these:
 
@@ -91,10 +72,8 @@ Fit one of these:
   into a 220R receiver gives about 5mA, so worst-case parts are marginal (typical parts
   switch at about 2mA); 3.3V senders built to the MIDI Association's CA-33 values give
   about 7mA. The 6N138 needs only about 1.6mA, so it tolerates weaker Type A senders.
-- Sourcing (JLCPCB, October 2026): the SOIC-8 HCPL-0630 is well stocked; DIP-8 HCPL-263x
-  stock there is low, so buy those elsewhere or use the SOIC-8 build.
 
-See [Jumpers](#jumpers) for JP3/JP4 and the other jumper settings.
+See [Jumpers](#jumpers) for JP3/JP4 to enable the 6N138 build (and other jumper settings).
 
 ### -5V reference: LM4040 or 5.1V zener (U5 / D8)
 
@@ -230,6 +209,14 @@ See [CHANGELOG.md](CHANGELOG.md) for the changes in each hardware revision.
   - Can optionally use an 78L50 (TO-92) voltage regulator rather than L7805 (TO-220)
   - Sometimes flashing the firmware seems to fail (can't connect to device) when the Nano is in the module, but seems to work if you take out out of the PCB to flash ¯\_(ツ)_/¯
 
+## Modifications from the original NanoGris module
+
+- Added MIDI-IN TRS-A jack + 6N137 optocoupler for MIDI clock sync. The original Grids always had this option as an extra jumper on the PCB - now it's broken out onto a more cluttered front panel !
+- Added MIDI-OUT TRS-A - required changing the pin used for the clock in to allow use of hardware serial TX/RX, so this modules requires [custom firmware](https://github.com/semi-sensible-synth/Gritty-Grids) even if you aren't using the MIDI-OUT option.
+  - I've added pin jumpers and cuttable solder jumpers to allow re-routing for stock firmware if required/desired.
+- The CLOCK and RND outputs are repurposed as the TRS-A MIDI-OUT and MIDI-IN ports, respectively. Several pin jumpers can be used to choose if these act as MIDI ports or the original voltage-based trigger outputs.
+- Made more space between the FILL knobs (closer to original Grids layout), use a tactile button and cap for TAP button, various tweaks to routing and front panel design
+
 ## TODO / IDEAS
 
 - Fabricate and bench-verify v0.5.0.
@@ -238,3 +225,12 @@ See [CHANGELOG.md](CHANGELOG.md) for the changes in each hardware revision.
 - Bench-test the +5V supply options (JP5: Nano regulator, JP6: Eurorack +5V) without
   U4.
 - Do we have room for mute switches/buttons on each channel ?
+- Now that we are using a full 8x2 IDC power socket - can we also (optionally) connect the CV/GATE pins (eg to clock), or follow the Disting Select Bus protocol to use it for MIDI ?
+
+### Future firmware ideas
+
+- We could change velocity based on accent (for bass and snare)
+- Disting Ex SD 6 Triggers mode, where notes span 48-53 (unaccented and accented)
+- Chord/arp output over MIDI. Set the chord root/inversion to be played via one of the CV inputs, or MIDI-IN
+  - Read MIDI notes from MIDI-IN, buffer the last 3 or 6 notes seen and play these for Out1-3, Accent 1-3
+- (Crazier ideas: pair it with a SAM2695 or VS1053B based module/expander for GM MIDI audio out ! There seem to be NOS versions on AliExpress ....)
