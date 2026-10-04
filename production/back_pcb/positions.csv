@@ -24,9 +24,10 @@ Ref,Val,Package,PosX,PosY,Rot,Side
 "C14","10uf","CP_Radial_D5.0mm_P2.50mm",141.050000,-97.825000,90.000000,top
 "C15","0.47uf","CP_Radial_D5.0mm_P2.50mm",140.970000,-81.280000,-90.000000,top
 "C16","100nf","C_Disc_D5.0mm_W2.5mm_P2.50mm",109.220000,-96.480000,90.000000,top
-"D5","1N5817","D_DO-34_SOD68_P7.62mm_Horizontal",143.611600,-113.004600,180.000000,top
+"D5","1N5817","D_DO-34_SOD68_P7.62mm_Horizontal",138.531600,-113.004600,180.000000,top
 "D6","1N5817","D_DO-34_SOD68_P7.62mm_Horizontal",139.700000,-89.154000,0.000000,top
-"J12","Conn_02x05_Odd_Even","IDC-Header_2x05_P2.54mm_Vertical",150.366892,-95.292585,0.000000,top
+"D8","5.1V","D_DO-35_SOD27_P2.54mm_Vertical_KathodeUp",143.230000,-78.730000,0.000000,top
+"J12","Eurorack power 2x8 (or 2x5)","IDC-Header_2x08_P2.54mm_Vertical",150.366892,-95.292585,0.000000,top
 "Q1","2N3904","TO-92_Wide",152.945000,-22.670000,-90.000000,top
 "Q2","2N3904","TO-92_Wide",143.510000,-26.670000,180.000000,top
 "R1","100k","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",129.540000,-62.230000,-90.000000,top
@@ -57,7 +58,7 @@ Ref,Val,Package,PosX,PosY,Rot,Side
 "R26","4.7k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",130.126400,-29.236000,90.000000,top
 "R27","4.7k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",126.875200,-29.236000,90.000000,top
 "R28","4.7k","R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal",123.649400,-29.236000,90.000000,top
-"R29","10r","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",153.670000,-113.030000,180.000000,top
+"R29","10r","R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical",143.610000,-113.030000,180.000000,top
 "R30","10r","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",147.269200,-86.791800,180.000000,top
 "R31","10k","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",135.850047,-92.563624,90.000000,top
 "R32","1k","R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal",110.490000,-120.650000,90.000000,top
